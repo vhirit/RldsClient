@@ -24,12 +24,18 @@ import {
   CheckCircle,
   Clock,
   AlertCircle,
-  X
+  X,
+  Home,
+  Car,
+  Briefcase,
+  FileCheck,
+  FileX,
+  Shield
 } from "lucide-react";
 
-export default function InvoiceList() {
-  const [invoices, setInvoices] = useState([]);
-  const [selectedInvoices, setSelectedInvoices] = useState([]);
+export default function LoanDocumentList() {
+  const [loans, setLoans] = useState([]);
+  const [selectedLoans, setSelectedLoans] = useState([]);
   const [dropdownOpen, setDropdownOpen] = useState(null);
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
@@ -38,119 +44,156 @@ export default function InvoiceList() {
     fromDate: "",
     toDate: "",
     customer: "",
-    bankName: ""
+    loanType: "",
+    verificationStatus: ""
   });
 
-  // Mock data with bank names
+  // Mock data with loan types and verification status
   useEffect(() => {
-    const fetchInvoices = async () => {
+    const fetchLoans = async () => {
       setLoading(true);
       // Simulate API call
       setTimeout(() => {
-        setInvoices([
+        setLoans([
           {
-            id: "INV-001",
+            id: "LOAN-001",
             customer: "John Doe",
             customerEmail: "john@example.com",
-            amount: 1250.00,
-            status: "paid",
-            createdAt: "2024-01-15",
-            dueDate: "2024-02-15",
-            items: 3,
-            bankName: "SBI"
+            loanAmount: 1250000.00,
+            status: "approved",
+            appliedDate: "2024-01-15",
+            verificationDate: "2024-01-20",
+            loanType: "home",
+            verificationStatus: "verified",
+            documents: {
+              identity: true,
+              income: true,
+              property: true,
+              employment: true
+            }
           },
           {
-            id: "INV-002",
+            id: "LOAN-002",
             customer: "Sarah Smith",
             customerEmail: "sarah@example.com",
-            amount: 890.50,
+            loanAmount: 890500.00,
             status: "pending",
-            createdAt: "2024-01-16",
-            dueDate: "2024-02-16",
-            items: 2,
-            bankName: "HDFC"
+            appliedDate: "2024-01-16",
+            verificationDate: "",
+            loanType: "car",
+            verificationStatus: "pending",
+            documents: {
+              identity: true,
+              income: false,
+              property: true,
+              employment: false
+            }
           },
           {
-            id: "INV-003",
+            id: "LOAN-003",
             customer: "Mike Johnson",
             customerEmail: "mike@example.com",
-            amount: 2100.75,
-            status: "overdue",
-            createdAt: "2024-01-10",
-            dueDate: "2024-01-31",
-            items: 5,
-            bankName: "Union Bank"
+            loanAmount: 500000.00,
+            status: "rejected",
+            appliedDate: "2024-01-10",
+            verificationDate: "2024-01-18",
+            loanType: "personal",
+            verificationStatus: "rejected",
+            documents: {
+              identity: true,
+              income: false,
+              property: false,
+              employment: true
+            }
           },
           {
-            id: "INV-004",
+            id: "LOAN-004",
             customer: "Emily Brown",
             customerEmail: "emily@example.com",
-            amount: 450.00,
-            status: "paid",
-            createdAt: "2024-01-18",
-            dueDate: "2024-02-18",
-            items: 1,
-            bankName: "SBI"
+            loanAmount: 2000000.00,
+            status: "approved",
+            appliedDate: "2024-01-18",
+            verificationDate: "2024-01-25",
+            loanType: "home",
+            verificationStatus: "verified",
+            documents: {
+              identity: true,
+              income: true,
+              property: true,
+              employment: true
+            }
           },
           {
-            id: "INV-005",
+            id: "LOAN-005",
             customer: "David Wilson",
             customerEmail: "david@example.com",
-            amount: 1675.25,
+            loanAmount: 300000.00,
             status: "pending",
-            createdAt: "2024-01-20",
-            dueDate: "2024-02-20",
-            items: 4,
-            bankName: "HDFC"
+            appliedDate: "2024-01-20",
+            verificationDate: "",
+            loanType: "education",
+            verificationStatus: "pending",
+            documents: {
+              identity: true,
+              income: true,
+              property: false,
+              employment: false
+            }
           },
           {
-            id: "INV-006",
+            id: "LOAN-006",
             customer: "Lisa Anderson",
             customerEmail: "lisa@example.com",
-            amount: 3200.00,
-            status: "paid",
-            createdAt: "2024-01-22",
-            dueDate: "2024-02-22",
-            items: 6,
-            bankName: "Union Bank"
+            loanAmount: 750000.00,
+            status: "approved",
+            appliedDate: "2024-01-22",
+            verificationDate: "2024-01-28",
+            loanType: "business",
+            verificationStatus: "verified",
+            documents: {
+              identity: true,
+              income: true,
+              property: true,
+              employment: true
+            }
           }
         ]);
         setLoading(false);
       }, 1000);
     };
 
-    fetchInvoices();
+    fetchLoans();
   }, []);
 
-  // Toggle single invoice selection
-  const toggleInvoiceSelection = (id) => {
-    setSelectedInvoices((prev) =>
-      prev.includes(id) ? prev.filter((invoiceId) => invoiceId !== id) : [...prev, id]
+  // Toggle single loan selection
+  const toggleLoanSelection = (id) => {
+    setSelectedLoans((prev) =>
+      prev.includes(id) ? prev.filter((loanId) => loanId !== id) : [...prev, id]
     );
   };
 
-  // Toggle all invoices selection
+  // Toggle all loans selection
   const toggleAllSelection = () => {
-    setSelectedInvoices((prev) =>
-      prev.length === filteredInvoices.length ? [] : filteredInvoices.map((invoice) => invoice.id)
+    setSelectedLoans((prev) =>
+      prev.length === filteredLoans.length ? [] : filteredLoans.map((loan) => loan.id)
     );
   };
 
   // Handle bulk download
   const handleBulkDownload = () => {
-    if (selectedInvoices.length === 0) {
-      alert("Please select invoices to download");
+    if (selectedLoans.length === 0) {
+      alert("Please select loans to download documents");
       return;
     }
     
-    console.log("Downloading invoices:", selectedInvoices);
-    alert(`Downloading ${selectedInvoices.length} invoice(s)`);
+    console.log("Downloading loan documents:", selectedLoans);
+    alert(`Downloading ${selectedLoans.length} loan document(s)`);
   };
 
   // Handle individual download
-  const handleDownload = (invoiceId) => {
-    console.log("Downloading invoice:", invoiceId);
-    alert(`Downloading invoice ${invoiceId}`);
+  const handleDownload = (loanId) => {
+    console.log("Downloading loan documents:", loanId);
+    alert(`Downloading documents for loan ${loanId}`);
   };
 
   // Toggle dropdown
@@ -158,32 +201,33 @@ export default function InvoiceList() {
     setDropdownOpen(dropdownOpen === id ? null : id);
   };
 
-  // Filter invoices based on search and filters
-  const filteredInvoices = invoices.filter((invoice) => {
+  // Filter loans based on search and filters
+  const filteredLoans = loans.filter((loan) => {
     const matchesSearch = 
-      invoice.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      invoice.customer.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      invoice.customerEmail.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      invoice.bankName.toLowerCase().includes(searchTerm.toLowerCase());
+      loan.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      loan.customer.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      loan.customerEmail.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      loan.loanType.toLowerCase().includes(searchTerm.toLowerCase());
     
-    const matchesStatus = !filters.status || invoice.status === filters.status;
-    const matchesCustomer = !filters.customer || invoice.customer.toLowerCase().includes(filters.customer.toLowerCase());
-    const matchesBank = !filters.bankName || invoice.bankName === filters.bankName;
+    const matchesStatus = !filters.status || loan.status === filters.status;
+    const matchesCustomer = !filters.customer || loan.customer.toLowerCase().includes(filters.customer.toLowerCase());
+    const matchesLoanType = !filters.loanType || loan.loanType === filters.loanType;
+    const matchesVerification = !filters.verificationStatus || loan.verificationStatus === filters.verificationStatus;
     
-    const matchesDate = (!filters.fromDate || invoice.createdAt >= filters.fromDate) &&
-                       (!filters.toDate || invoice.createdAt <= filters.toDate);
+    const matchesDate = (!filters.fromDate || loan.appliedDate >= filters.fromDate) &&
+                       (!filters.toDate || loan.appliedDate <= filters.toDate);
     
-    return matchesSearch && matchesStatus && matchesCustomer && matchesBank && matchesDate;
+    return matchesSearch && matchesStatus && matchesCustomer && matchesLoanType && matchesVerification && matchesDate;
   });
 
   // Get status config with icons
   const getStatusConfig = (status) => {
     switch (status) {
-      case "paid":
+      case "approved":
         return {
           color: "bg-green-50 text-green-700 border border-green-200",
           icon: <CheckCircle className="w-4 h-4" />,
-          text: "Paid",
+          text: "Approved",
           badgeColor: "bg-green-500"
         };
       case "pending":
@@ -193,11 +237,11 @@ export default function InvoiceList() {
           text: "Pending",
           badgeColor: "bg-yellow-500"
         };
-      case "overdue":
+      case "rejected":
         return {
           color: "bg-red-50 text-red-700 border border-red-200",
           icon: <AlertCircle className="w-4 h-4" />,
-          text: "Overdue",
+          text: "Rejected",
           badgeColor: "bg-red-500"
         };
       default:
@@ -210,17 +254,75 @@ export default function InvoiceList() {
     }
   };
 
-  // Get bank color
-  const getBankColor = (bankName) => {
-    switch (bankName) {
-      case "SBI":
-        return "bg-blue-50 text-blue-700 border border-blue-200";
-      case "HDFC":
-        return "bg-purple-50 text-purple-700 border border-purple-200";
-      case "Union Bank":
-        return "bg-orange-50 text-orange-700 border border-orange-200";
+  // Get verification status config
+  const getVerificationConfig = (status) => {
+    switch (status) {
+      case "verified":
+        return {
+          color: "bg-green-50 text-green-700 border border-green-200",
+          icon: <FileCheck className="w-4 h-4" />,
+          text: "Verified"
+        };
+      case "pending":
+        return {
+          color: "bg-yellow-50 text-yellow-700 border border-yellow-200",
+          icon: <Clock className="w-4 h-4" />,
+          text: "Pending Verification"
+        };
+      case "rejected":
+        return {
+          color: "bg-red-50 text-red-700 border border-red-200",
+          icon: <FileX className="w-4 h-4" />,
+          text: "Verification Failed"
+        };
       default:
-        return "bg-gray-50 text-gray-700 border border-gray-200";
+        return {
+          color: "bg-gray-50 text-gray-700 border border-gray-200",
+          icon: <Clock className="w-4 h-4" />,
+          text: status
+        };
+    }
+  };
+
+  // Get loan type config
+  const getLoanTypeConfig = (type) => {
+    switch (type) {
+      case "home":
+        return {
+          color: "bg-blue-50 text-blue-700 border border-blue-200",
+          icon: <Home className="w-4 h-4" />,
+          text: "Home Loan"
+        };
+      case "car":
+        return {
+          color: "bg-purple-50 text-purple-700 border border-purple-200",
+          icon: <Car className="w-4 h-4" />,
+          text: "Car Loan"
+        };
+      case "personal":
+        return {
+          color: "bg-orange-50 text-orange-700 border border-orange-200",
+          icon: <User className="w-4 h-4" />,
+          text: "Personal Loan"
+        };
+      case "education":
+        return {
+          color: "bg-green-50 text-green-700 border border-green-200",
+          icon: <FileText className="w-4 h-4" />,
+          text: "Education Loan"
+        };
+      case "business":
+        return {
+          color: "bg-indigo-50 text-indigo-700 border border-indigo-200",
+          icon: <Briefcase className="w-4 h-4" />,
+          text: "Business Loan"
+        };
+      default:
+        return {
+          color: "bg-gray-50 text-gray-700 border border-gray-200",
+          icon: <CreditCard className="w-4 h-4" />,
+          text: type
+        };
     }
   };
 
@@ -234,6 +336,7 @@ export default function InvoiceList() {
 
   // Format date
   const formatDate = (dateString) => {
+    if (!dateString) return "N/A";
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'short',
@@ -248,7 +351,8 @@ export default function InvoiceList() {
       fromDate: "",
       toDate: "",
       customer: "",
-      bankName: ""
+      loanType: "",
+      verificationStatus: ""
     });
     setSearchTerm("");
   };
@@ -257,80 +361,112 @@ export default function InvoiceList() {
   const hasActiveFilters = () => {
     return searchTerm || 
            filters.status || 
-           filters.bankName || 
+           filters.loanType || 
+           filters.verificationStatus ||
            filters.customer || 
            filters.fromDate || 
            filters.toDate;
   };
 
-  // Stats Cards Component
- // Stats Cards Component with Left Border Only
-const StatsCards = () => {
-  const stats = [
-    {
-      label: "Total Invoices",
-      value: invoices.length,
-      icon: FileText,
-      borderColor: "border-l-blue-500",
-      trend: "+12%",
-      description: "All invoices"
-    },
-    {
-      label: "Total Revenue",
-      value: formatCurrency(invoices.reduce((sum, inv) => sum + inv.amount, 0)),
-      icon: DollarSign,
-      borderColor: "border-l-green-500",
-      trend: "+18%",
-      description: "Total amount"
-    },
-    {
-      label: "Pending",
-      value: invoices.filter(inv => inv.status === 'pending').length,
-      icon: Clock,
-      borderColor: "border-l-yellow-500",
-      trend: "+5%",
-      description: "Awaiting payment"
-    },
-    {
-      label: "Overdue",
-      value: invoices.filter(inv => inv.status === 'overdue').length,
-      icon: AlertCircle,
-      borderColor: "border-l-red-500",
-      trend: "+2%",
-      description: "Requires attention"
-    }
-  ];
+  // Document status component
+  const DocumentStatus = ({ documents }) => {
+    const documentTypes = [
+      { key: 'identity', label: 'ID Proof', icon: User },
+      { key: 'income', label: 'Income', icon: DollarSign },
+      { key: 'property', label: 'Property', icon: Home },
+      { key: 'employment', label: 'Employment', icon: Briefcase }
+    ];
 
-  return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-      {stats.map((stat, index) => {
-        const IconComponent = stat.icon;
-        return (
-          <div 
-            key={index} 
-            className={`bg-white rounded-2xl shadow-sm border-l-4 ${stat.borderColor} border-t border-r border-b border-gray-100 p-6 hover:shadow-md transition-all duration-300 group`}
-          >
-            <div className="flex items-center justify-between mb-4">
-              <div className={`p-3 rounded-xl ${stat.borderColor.replace('border-l-', 'bg-')} bg-opacity-10 group-hover:scale-110 transition-transform duration-200`}>
-                <IconComponent className={`w-6 h-6 ${stat.borderColor.replace('border-l-', 'text-')}`} />
+    return (
+      <div className="flex flex-wrap gap-1">
+        {documentTypes.map((doc) => {
+          const IconComponent = doc.icon;
+          return (
+            <div
+              key={doc.key}
+              className={`p-1 rounded-lg ${
+                documents[doc.key] 
+                  ? 'bg-green-100 text-green-700' 
+                  : 'bg-red-100 text-red-700'
+              }`}
+              title={`${doc.label}: ${documents[doc.key] ? 'Submitted' : 'Pending'}`}
+            >
+              <IconComponent className="w-3 h-3" />
+            </div>
+          );
+        })}
+      </div>
+    );
+  };
+
+  // Stats Cards Component
+  const StatsCards = () => {
+    const stats = [
+      {
+        label: "Total Loans",
+        value: loans.length,
+        icon: FileText,
+        borderColor: "border-l-blue-500",
+        trend: "+8%",
+        description: "All loan applications"
+      },
+      {
+        label: "Total Amount",
+        value: formatCurrency(loans.reduce((sum, loan) => sum + loan.loanAmount, 0)),
+        icon: DollarSign,
+        borderColor: "border-l-green-500",
+        trend: "+15%",
+        description: "Total loan amount"
+      },
+      {
+        label: "Pending Verification",
+        value: loans.filter(loan => loan.verificationStatus === 'pending').length,
+        icon: Clock,
+        borderColor: "border-l-yellow-500",
+        trend: "+3%",
+        description: "Awaiting verification"
+      },
+      {
+        label: "Approved Loans",
+        value: loans.filter(loan => loan.status === 'approved').length,
+        icon: CheckCircle,
+        borderColor: "border-l-purple-500",
+        trend: "+12%",
+        description: "Successfully approved"
+      }
+    ];
+
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        {stats.map((stat, index) => {
+          const IconComponent = stat.icon;
+          return (
+            <div 
+              key={index} 
+              className={`bg-white rounded-2xl shadow-sm border-l-4 ${stat.borderColor} border-t border-r border-b border-gray-100 p-6 hover:shadow-md transition-all duration-300 group`}
+            >
+              <div className="flex items-center justify-between mb-4">
+                <div className={`p-3 rounded-xl ${stat.borderColor.replace('border-l-', 'bg-')} bg-opacity-10 group-hover:scale-110 transition-transform duration-200`}>
+                  <IconComponent className={`w-6 h-6 ${stat.borderColor.replace('border-l-', 'text-')}`} />
+                </div>
+                <span className={`text-xs font-medium px-2 py-1 rounded-full ${
+                  stat.trend.startsWith('+') ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                }`}>
+                  {stat.trend}
+                </span>
               </div>
-              <span className={`text-xs font-medium px-2 py-1 rounded-full ${
-                stat.trend.startsWith('+') ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-              }`}>
-                {stat.trend}
-              </span>
+              <div>
+                <p className="text-2xl font-bold text-gray-900 mb-1">{stat.value}</p>
+                <p className="text-sm font-medium text-gray-600 mb-1">{stat.label}</p>
+                <p className="text-xs text-gray-500">{stat.description}</p>
+              </div>
             </div>
-            <div>
-              <p className="text-2xl font-bold text-gray-900 mb-1">{stat.value}</p>
-              <p className="text-sm font-medium text-gray-600 mb-1">{stat.label}</p>
-              <p className="text-xs text-gray-500">{stat.description}</p>
-            </div>
-          </div>
-        );
-      })}
-    </div>
-  );
-};
+          );
+        })}
+      </div>
+    );
+  };
+
   return (
     <div className="p-6 bg-gradient-to-br from-gray-50 to-blue-50 min-h-screen">
       <div className="max-w-7xl mx-auto">
@@ -338,22 +474,22 @@ const StatsCards = () => {
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-8">
           <div className="mb-6 lg:mb-0">
             <h2 className="text-3xl font-bold text-gray-900 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-              Invoice Management
+              Loan Document Management
             </h2>
             <p className="text-gray-600 mt-2 flex items-center">
-              <CreditCard className="w-4 h-4 mr-2 text-blue-500" />
-              Manage and track all your invoices in one place
+              <Shield className="w-4 h-4 mr-2 text-blue-500" />
+              Manage and track all loan applications and documents
             </p>
           </div>
           
           <div className="flex items-center space-x-3">
-            {selectedInvoices.length > 0 && (
+            {selectedLoans.length > 0 && (
               <button
                 onClick={handleBulkDownload}
                 className="flex items-center space-x-2 px-6 py-3 bg-green-600 text-white rounded-xl hover:bg-green-700 transition-all duration-200 shadow-sm hover:shadow-md"
               >
                 <Download className="w-4 h-4" />
-                <span>Download ({selectedInvoices.length})</span>
+                <span>Download ({selectedLoans.length})</span>
               </button>
             )}
             <button 
@@ -365,7 +501,7 @@ const StatsCards = () => {
             </button>
             <button className="flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl hover:from-blue-700 hover:to-purple-700 transition-all duration-200 shadow-sm hover:shadow-md">
               <Plus className="w-4 h-4" />
-              <span>New Invoice</span>
+              <span>New Loan Application</span>
             </button>
           </div>
         </div>
@@ -381,13 +517,13 @@ const StatsCards = () => {
               {/* Search Input */}
               <div className="flex-1">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Search Invoices
+                  Search Loans
                 </label>
                 <div className="relative">
                   <Search className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
                   <input
                     type="text"
-                    placeholder="Search by invoice ID, customer, email, or bank name..."
+                    placeholder="Search by loan ID, customer, email, or loan type..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white shadow-sm"
@@ -408,7 +544,7 @@ const StatsCards = () => {
                 {/* Status Filter */}
                 <div className="w-48">
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Status
+                    Loan Status
                   </label>
                   <div className="relative">
                     <select
@@ -417,30 +553,32 @@ const StatsCards = () => {
                       className="w-full px-3 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white appearance-none shadow-sm"
                     >
                       <option value="">All Status</option>
-                      <option value="paid">Paid</option>
+                      <option value="approved">Approved</option>
                       <option value="pending">Pending</option>
-                      <option value="overdue">Overdue</option>
+                      <option value="rejected">Rejected</option>
                     </select>
                     <ChevronDown className="w-4 h-4 absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none" />
                   </div>
                 </div>
 
-                {/* Bank Filter */}
+                {/* Loan Type Filter */}
                 <div className="w-48">
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Bank
+                    Loan Type
                   </label>
                   <div className="relative">
-                    <Building className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                    <CreditCard className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
                     <select
-                      value={filters.bankName}
-                      onChange={(e) => setFilters({ ...filters, bankName: e.target.value })}
+                      value={filters.loanType}
+                      onChange={(e) => setFilters({ ...filters, loanType: e.target.value })}
                       className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white shadow-sm"
                     >
-                      <option value="">All Banks</option>
-                      <option value="SBI">SBI</option>
-                      <option value="HDFC">HDFC</option>
-                      <option value="Union Bank">Union Bank</option>
+                      <option value="">All Types</option>
+                      <option value="home">Home Loan</option>
+                      <option value="car">Car Loan</option>
+                      <option value="personal">Personal Loan</option>
+                      <option value="education">Education Loan</option>
+                      <option value="business">Business Loan</option>
                     </select>
                   </div>
                 </div>
@@ -493,6 +631,26 @@ const StatsCards = () => {
                   </div>
                 </div>
 
+                {/* Verification Status Filter */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Verification Status
+                  </label>
+                  <div className="relative">
+                    <FileCheck className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                    <select
+                      value={filters.verificationStatus}
+                      onChange={(e) => setFilters({ ...filters, verificationStatus: e.target.value })}
+                      className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
+                    >
+                      <option value="">All Verification</option>
+                      <option value="verified">Verified</option>
+                      <option value="pending">Pending</option>
+                      <option value="rejected">Rejected</option>
+                    </select>
+                  </div>
+                </div>
+
                 {/* Date Range */}
                 <div className="grid grid-cols-2 gap-3">
                   <div>
@@ -524,12 +682,6 @@ const StatsCards = () => {
                     </div>
                   </div>
                 </div>
-
-                <div className="flex items-end">
-                  <button className="px-6 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-200 w-full">
-                    Apply Filters
-                  </button>
-                </div>
               </div>
             </div>
           </div>
@@ -543,27 +695,27 @@ const StatsCards = () => {
                     <input
                       type="checkbox"
                       checked={
-                        selectedInvoices.length === filteredInvoices.length && 
-                        filteredInvoices.length > 0
+                        selectedLoans.length === filteredLoans.length && 
+                        filteredLoans.length > 0
                       }
                       onChange={toggleAllSelection}
                       className="w-4 h-4 text-blue-600 bg-white border-gray-300 rounded focus:ring-blue-500"
                     />
                   </th>
                   <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">
-                    Invoice
+                    Loan ID
                   </th>
                   <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">
                     Customer
                   </th>
                   <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">
-                    Bank & Details
+                    Loan Details
+                  </th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">
+                    Documents
                   </th>
                   <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">
                     Dates
-                  </th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">
-                    Amount
                   </th>
                   <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">
                     Status
@@ -579,23 +731,23 @@ const StatsCards = () => {
                     <td colSpan="8" className="px-6 py-12 text-center">
                       <div className="flex flex-col items-center justify-center">
                         <RefreshCw className="w-8 h-8 text-blue-600 animate-spin mb-3" />
-                        <p className="text-gray-600 font-medium">Loading invoices...</p>
-                        <p className="text-gray-500 text-sm mt-1">Please wait while we fetch your invoices</p>
+                        <p className="text-gray-600 font-medium">Loading loan applications...</p>
+                        <p className="text-gray-500 text-sm mt-1">Please wait while we fetch your loan data</p>
                       </div>
                     </td>
                   </tr>
-                ) : filteredInvoices.length === 0 ? (
+                ) : filteredLoans.length === 0 ? (
                   <tr>
                     <td colSpan="8" className="px-6 py-12 text-center">
                       <div className="text-center">
                         <FileText className="w-16 h-16 mx-auto mb-4 text-gray-300" />
                         <h3 className="text-lg font-medium text-gray-900 mb-2">
-                          {hasActiveFilters() ? "No invoices match your filters" : "No invoices found"}
+                          {hasActiveFilters() ? "No loans match your filters" : "No loans found"}
                         </h3>
                         <p className="text-gray-500 mb-6 max-w-md mx-auto">
                           {hasActiveFilters() 
                             ? "Try adjusting your search criteria or filters to find what you're looking for."
-                            : "Get started by creating your first invoice."
+                            : "Get started by creating your first loan application."
                           }
                         </p>
                         {hasActiveFilters() ? (
@@ -607,35 +759,43 @@ const StatsCards = () => {
                           </button>
                         ) : (
                           <button className="px-6 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-200">
-                            Create New Invoice
+                            Create New Loan
                           </button>
                         )}
                       </div>
                     </td>
                   </tr>
                 ) : (
-                  filteredInvoices.map((invoice) => {
-                    const statusConfig = getStatusConfig(invoice.status);
+                  filteredLoans.map((loan) => {
+                    const statusConfig = getStatusConfig(loan.status);
+                    const verificationConfig = getVerificationConfig(loan.verificationStatus);
+                    const loanTypeConfig = getLoanTypeConfig(loan.loanType);
+                    
                     return (
-                      <tr key={invoice.id} className="hover:bg-gray-50 transition-all duration-150 group">
+                      <tr key={loan.id} className="hover:bg-gray-50 transition-all duration-150 group">
                         <td className="px-6 py-4">
                           <input
                             type="checkbox"
-                            checked={selectedInvoices.includes(invoice.id)}
-                            onChange={() => toggleInvoiceSelection(invoice.id)}
+                            checked={selectedLoans.includes(loan.id)}
+                            onChange={() => toggleLoanSelection(loan.id)}
                             className="w-4 h-4 text-blue-600 bg-white border-gray-300 rounded focus:ring-blue-500 group-hover:border-blue-300"
                           />
                         </td>
                         <td className="px-6 py-4">
                           <div className="flex items-center space-x-3">
                             <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center text-white font-bold text-sm">
-                              <FileText className="w-5 h-5" />
+                              <CreditCard className="w-5 h-5" />
                             </div>
                             <div>
                               <div className="font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">
-                                {invoice.id}
+                                {loan.id}
                               </div>
-                              <div className="text-sm text-gray-500">{invoice.items} items</div>
+                              <div className="text-sm text-gray-500">
+                                <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${loanTypeConfig.color}`}>
+                                  {loanTypeConfig.icon}
+                                  <span className="ml-1">{loanTypeConfig.text}</span>
+                                </span>
+                              </div>
                             </div>
                           </div>
                         </td>
@@ -643,38 +803,39 @@ const StatsCards = () => {
                           <div className="space-y-1">
                             <div className="font-medium text-gray-900 flex items-center space-x-2">
                               <User className="w-4 h-4 text-gray-400" />
-                              <span>{invoice.customer}</span>
+                              <span>{loan.customer}</span>
                             </div>
                             <div className="flex items-center space-x-2 text-sm text-gray-500">
                               <Mail className="w-3 h-3" />
-                              <span>{invoice.customerEmail}</span>
+                              <span>{loan.customerEmail}</span>
                             </div>
                           </div>
                         </td>
                         <td className="px-6 py-4">
                           <div className="space-y-2">
-                            <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${getBankColor(invoice.bankName)}`}>
-                              <Building className="w-3 h-3 mr-1" />
-                              {invoice.bankName}
+                            <div className="flex items-center space-x-2 font-bold text-gray-900">
+                              <DollarSign className="w-4 h-4 text-green-600" />
+                              <span>{formatCurrency(loan.loanAmount)}</span>
+                            </div>
+                            <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${verificationConfig.color}`}>
+                              {verificationConfig.icon}
+                              <span className="ml-1">{verificationConfig.text}</span>
                             </span>
                           </div>
+                        </td>
+                        <td className="px-6 py-4">
+                          <DocumentStatus documents={loan.documents} />
                         </td>
                         <td className="px-6 py-4">
                           <div className="space-y-1 text-sm text-gray-600">
                             <div className="flex items-center space-x-1">
                               <Calendar className="w-3 h-3" />
-                              <span>Created: {formatDate(invoice.createdAt)}</span>
+                              <span>Applied: {formatDate(loan.appliedDate)}</span>
                             </div>
                             <div className="flex items-center space-x-1">
                               <Calendar className="w-3 h-3" />
-                              <span>Due: {formatDate(invoice.dueDate)}</span>
+                              <span>Verified: {formatDate(loan.verificationDate)}</span>
                             </div>
-                          </div>
-                        </td>
-                        <td className="px-6 py-4">
-                          <div className="flex items-center space-x-2 font-bold text-gray-900">
-                            <DollarSign className="w-4 h-4 text-green-600" />
-                            <span>{formatCurrency(invoice.amount)}</span>
                           </div>
                         </td>
                         <td className="px-6 py-4">
@@ -686,9 +847,9 @@ const StatsCards = () => {
                         <td className="px-6 py-4">
                           <div className="flex items-center space-x-1">
                             <button 
-                              onClick={() => handleDownload(invoice.id)}
+                              onClick={() => handleDownload(loan.id)}
                               className="p-2 hover:bg-blue-50 rounded-lg transition-all duration-200 text-blue-600 hover:scale-110"
-                              title="Download"
+                              title="Download Documents"
                             >
                               <Download className="w-4 h-4" />
                             </button>
@@ -700,7 +861,7 @@ const StatsCards = () => {
                             </button>
                             <button 
                               className="p-2 hover:bg-purple-50 rounded-lg transition-all duration-200 text-purple-600 hover:scale-110"
-                              title="Edit"
+                              title="Edit Application"
                             >
                               <Edit className="w-4 h-4" />
                             </button>
@@ -709,33 +870,37 @@ const StatsCards = () => {
                             <div className="relative">
                               <button
                                 className="p-2 hover:bg-gray-100 rounded-lg transition-all duration-200 text-gray-600 hover:scale-110"
-                                onClick={() => toggleDropdown(invoice.id)}
+                                onClick={() => toggleDropdown(loan.id)}
                               >
                                 <MoreVertical className="w-4 h-4" />
                               </button>
 
-                              {dropdownOpen === invoice.id && (
+                              {dropdownOpen === loan.id && (
                                 <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-lg border border-gray-200 z-50 overflow-hidden">
                                   <div className="py-2">
                                     <button
-                                      onClick={() => handleDownload(invoice.id)}
+                                      onClick={() => handleDownload(loan.id)}
                                       className="flex items-center w-full px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-150"
                                     >
                                       <Download className="w-4 h-4 mr-3" />
-                                      Download PDF
+                                      Download All Documents
                                     </button>
                                     <button className="flex items-center w-full px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-150">
                                       <Eye className="w-4 h-4 mr-3" />
-                                      View Details
+                                      View Application Details
                                     </button>
                                     <button className="flex items-center w-full px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-150">
                                       <Edit className="w-4 h-4 mr-3" />
-                                      Edit Invoice
+                                      Edit Application
+                                    </button>
+                                    <button className="flex items-center w-full px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-150">
+                                      <FileCheck className="w-4 h-4 mr-3" />
+                                      Verify Documents
                                     </button>
                                     <div className="border-t border-gray-200 my-1"></div>
                                     <button className="flex items-center w-full px-4 py-3 text-sm text-red-700 hover:bg-red-50 transition-colors duration-150">
                                       <Trash2 className="w-4 h-4 mr-3" />
-                                      Delete Invoice
+                                      Delete Application
                                     </button>
                                   </div>
                                 </div>
@@ -755,10 +920,10 @@ const StatsCards = () => {
           <div className="px-6 py-4 border-t border-gray-200 bg-gray-50">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
               <div className="text-sm text-gray-600">
-                Showing {filteredInvoices.length} of {invoices.length} invoices
-                {selectedInvoices.length > 0 && (
+                Showing {filteredLoans.length} of {loans.length} loan applications
+                {selectedLoans.length > 0 && (
                   <span className="ml-2 font-medium text-blue-600">
-                    ({selectedInvoices.length} selected)
+                    ({selectedLoans.length} selected)
                   </span>
                 )}
               </div>

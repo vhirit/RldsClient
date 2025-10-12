@@ -96,9 +96,9 @@ export default function Header() {
   }
 
   return (
-    <header className="bg-white shadow p-4 flex justify-between items-center">
+    <header className=" bg-white shadow p-4 flex justify-between items-center">
       {/* Left Side - Title */}
-      <h1 className="text-lg font-bold text-gray-800">
+      <h1 className=" text-lg font-bold text-gray-800">
         Welcome , {user.firstName}!
       </h1>
 

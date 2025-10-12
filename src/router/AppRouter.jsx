@@ -12,9 +12,11 @@ const DashboardHome = React.lazy(() => import("../pages/Dashboard/Index"));
 
 // CORRECTED IMPORT PATH
 const UserTable = React.lazy(() => import("../pages/user/userTable"));
-const DocumentTable = React.lazy(() => import("../pages/document/document"));
+const DocumentTable = React.lazy(() => import("../pages/document/documentList/documentLsit"));
 const InvoiceList = React.lazy(() => import("../pages/invoice/invoiceList"));
-const DocumentCreate = React.lazy(() => import("../pages/document/MultiStepForm"));
+// const DocumentCreate = React.lazy(() => import("../pages/document/MultiStepForm"));
+// const DocumentCreate = React.lazy(() => import("../pages/document/VerificationForm/VerificationForm"));
+const DocumentCreate = React.lazy(() => import("../pages/document/VerificationForm/VerificationForms"));
 // Loading component
 const LoadingSpinner = () => (
   <div className="flex items-center justify-center h-screen">

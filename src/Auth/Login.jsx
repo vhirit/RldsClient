@@ -1,37 +1,24 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginUser } from '../store/features/auth/authSlice';
 import {
-  Box,
-  TextField,
-  Button,
-  Typography,
-  Alert,
-  Link,
-  InputAdornment,
-  IconButton,
-  Grid,
-  Card,
-  CardContent,
-  LinearProgress
-} from '@mui/material';
-import {
-  Visibility,
-  VisibilityOff,
-  Email,
+  Eye,
+  EyeOff,
+  Mail,
   Lock,
-  VerifiedUser,
-  Warning,
-  CheckCircle,
-  BarChart,
+  UserCheck,
+  AlertCircle,
+  CheckCircle2,
+  BarChart3,
   TrendingUp,
-  PieChart,
-  Notifications
-} from '@mui/icons-material';
-
-
+  Shield,
+  CreditCard,
+  Building,
+  Users,
+  FileText
+} from 'lucide-react';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -45,6 +32,22 @@ const Login = () => {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [localError, setLocalError] = useState('');
+  const [fieldErrors, setFieldErrors] = useState({
+    email: false,
+    password: false
+  });
+  const [touched, setTouched] = useState({
+    email: false,
+    password: false
+  });
+
+  // Prevent page scrolling
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, []);
 
   const handleChange = (e) => {
     const { name, value, checked } = e.target;
@@ -52,14 +55,53 @@ const Login = () => {
       ...prev,
       [name]: name === 'rememberMe' ? checked : value,
     }));
+    
+    // Clear field error when user starts typing
+    if (fieldErrors[name]) {
+      setFieldErrors(prev => ({
+        ...prev,
+        [name]: false
+      }));
+    }
     setLocalError('');
+  };
+
+  const handleBlur = (e) => {
+    const { name, value } = e.target;
+    setTouched(prev => ({
+      ...prev,
+      [name]: true
+    }));
+
+    // Validate individual field on blur
+    if (!value.trim()) {
+      setFieldErrors(prev => ({
+        ...prev,
+        [name]: true
+      }));
+    }
+  };
+
+  const validateForm = () => {
+    const errors = {
+      email: !credentials.email.trim(),
+      password: !credentials.password.trim()
+    };
+    
+    setFieldErrors(errors);
+    setTouched({
+      email: true,
+      password: true
+    });
+
+    return !errors.email && !errors.password;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    if (!credentials.email || !credentials.password) {
-      setLocalError('Please enter both email and password');
+    if (!validateForm()) {
+      setLocalError('Please fill in all required fields');
       return;
     }
 
@@ -87,590 +129,300 @@ const Login = () => {
     navigate('/register');
   };
 
-  // Color palette
-  const colors = {
-    primary: '#2274A5',
-    secondary: '#37AFE1',
-    lightBg: '#f8fafc',
-    white: '#ffffff',
-    textDark: '#1a202c',
-    textLight: '#718096',
-    border: '#e2e8f0'
+  // Helper function to determine input border color
+  const getInputBorderColor = (fieldName) => {
+    if (touched[fieldName] && fieldErrors[fieldName]) {
+      return 'border-red-500 focus:border-red-500 focus:ring-red-500';
+    }
+    return 'border-gray-300 focus:ring-blue-500 focus:border-blue-500';
   };
 
-  // Mock data for banking verification dashboard
-  const verificationStats = [
-    { label: 'Total Verifications', value: '1,247', icon: <VerifiedUser />, color: colors.primary },
-    { label: 'Pending Reviews', value: '23', icon: <Warning />, color: colors.secondary },
-    { label: 'Completed Today', value: '89', icon: <CheckCircle />, color: colors.primary },
-    { label: 'Success Rate', value: '98.5%', icon: <BarChart />, color: colors.secondary }
-  ];
-
-  const chartData = [
-    { name: 'Verified', value: 75, color: colors.primary },
-    { name: 'Pending', value: 15, color: colors.secondary },
-    { name: 'Rejected', value: 10, color: '#dc2626' } // Keeping red for rejected status
+  // Mock data for dashboard preview
+  const stats = [
+    { label: 'Total Verifications', value: '1,247', color: 'text-blue-600' },
+    { label: 'Pending Reviews', value: '23', color: 'text-yellow-600' },
+    { label: 'Completed Today', value: '89', color: 'text-green-600' },
+    { label: 'Success Rate', value: '98.5%', color: 'text-purple-600' }
   ];
 
   return (
-    <Box sx={{ 
-      minHeight: '100vh', 
-      backgroundColor: colors.white,
-      background: `linear-gradient(135deg, ${colors.lightBg} 0%, #e2e8f0 100%)`,
-      position: 'relative'
-    }}>
-      <Grid container sx={{ minHeight: '100vh' }}>
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-100 flex items-center justify-center p-4 overflow-hidden">
+      <div className="w-full max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+        
         {/* Left Side - Login Form */}
-        <Grid item xs={12} md={6} sx={{ 
-          display: 'flex', 
-          alignItems: 'center', 
-          justifyContent: 'center',
-          p: { xs: 2, sm: 3, md: 4 },
-          position: 'relative'
-        }}>
-          <Box sx={{ 
-            width: '100%', 
-            maxWidth: 450
-          }}>
-            
-            {/* Centered Logo */}
-            <Box sx={{ 
-              textAlign: 'center', 
-              mb: 4,
-              width: '100%',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center'
-            }}>
-              <Box 
-                component="img"
-                src="/logo.svg" 
-                alt="RLDS Pvt Limited Logo" 
-                sx={{ 
-                  height: { xs: 50, sm: 60 },
-                  width: 'auto',
-                  mb: 3
-                }}
-                onError={(e) => {
-                  e.target.src = `data:image/svg+xml;base64,${btoa(`
-                    <svg width="200" height="50" viewBox="0 0 200 50">
-                      <rect width="200" height="50" fill="${colors.primary}" rx="8"/>
-                      <text x="100" y="30" font-family="Poppins" font-size="18" fill="white" text-anchor="middle">SecureVerify</text>
-                    </svg>
-                  `)}`;
-                }}
-              />
-              <Typography 
-                variant="h4" 
-                sx={{ 
-                  fontWeight: 'bold', 
-                  color: colors.textDark,
-                  fontSize: { xs: '1.75rem', sm: '2rem' },
-                  mb: 1,
-                  fontFamily: '"Poppins", sans-serif'
-                }}
-              >
-                Welcome Back
-              </Typography>
-              <Typography variant="body1" sx={{ 
-                color: colors.textLight, 
-                textAlign: 'center',
-                fontFamily: '"Poppins", sans-serif',
-                mb: 3,
-                fontSize: '1.1rem',
-                fontWeight: '500'
-              }}>
-                Secure Access to Financial Verification Hub
-              </Typography>
-            </Box>
+        <div className="w-full max-w-md mx-auto lg:mx-0">
+          {/* Logo and Header */}
+          <div className="text-center mb-8">
+            <div className="flex justify-center mb-6">
+              <div className="w-16 h-16 bg-gradient-to-br from-blue-600 to-purple-600 rounded-2xl flex items-center justify-center">
+                <Shield className="w-8 h-8 text-white" />
+              </div>
+            </div>
+            <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-3 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              Welcome Back
+            </h1>
+            <p className="text-gray-600 text-lg font-medium">
+              Secure Access to Financial Verification Hub
+            </p>
+          </div>
 
-            {/* Login Form */}
-            <Box component="form" onSubmit={handleSubmit} sx={{ width: '100%' }}>
-              {/* Error Messages */}
-              {(isError || localError) && (
-                <Alert severity="error" sx={{ mb: 3, borderRadius: 2 }}>
-                  {localError || message}
-                </Alert>
-              )}
+          {/* Login Form */}
+          <form onSubmit={handleSubmit} className="space-y-6" noValidate>
+            {/* Error Messages */}
+            {(isError || localError) && (
+              <div className="bg-red-50 border border-red-200 rounded-xl p-4 flex items-start space-x-3">
+                <AlertCircle className="w-5 h-5 text-red-500 mt-0.5 flex-shrink-0" />
+                <div>
+                  <p className="text-red-800 font-medium text-sm">
+                    {localError || message}
+                  </p>
+                </div>
+              </div>
+            )}
 
-              {/* Email Field */}
-              <Box sx={{ mb: 3 }}>
-                <Typography variant="body2" sx={{ 
-                  fontWeight: '600', 
-                  color: colors.textDark, 
-                  mb: 1,
-                  fontFamily: '"Poppins", sans-serif'
-                }}>
-                  Email Address
-                </Typography>
-                <TextField
-                  fullWidth
-                  name="email"
+            {/* Email Field */}
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
+                Email Address
+                <span className="text-red-500 ml-1">*</span>
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <Mail className={`h-5 w-5 ${fieldErrors.email ? 'text-red-500' : 'text-gray-400'}`} />
+                </div>
+                <input
                   type="email"
-                  placeholder="Enter your email address"
+                  name="email"
                   value={credentials.email}
                   onChange={handleChange}
-                  required
+                  onBlur={handleBlur}
                   disabled={isLoading}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <Email sx={{ color: colors.textLight }} />
-                      </InputAdornment>
-                    ),
-                  }}
-                  sx={{
-                    '& .MuiOutlinedInput-root': {
-                      height: 50,
-                      backgroundColor: colors.white,
-                      borderRadius: 2,
-                      '& fieldset': {
-                        borderColor: colors.border,
-                      },
-                      '&:hover fieldset': {
-                        borderColor: colors.secondary,
-                      },
-                      '&.Mui-focused fieldset': {
-                        borderColor: colors.primary,
-                        borderWidth: 2,
-                      },
-                    },
-                  }}
+                  placeholder="Enter your email address"
+                  className={`block w-full pl-10 pr-4 py-3 border rounded-xl focus:ring-2 bg-white transition-all duration-200 placeholder-gray-400 disabled:bg-gray-50 disabled:cursor-not-allowed ${getInputBorderColor('email')}`}
+                  required
                 />
-              </Box>
+                {fieldErrors.email && touched.email && (
+                  <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
+                    <AlertCircle className="h-5 w-5 text-red-500" />
+                  </div>
+                )}
+              </div>
+              {fieldErrors.email && touched.email && (
+                <p className="mt-1 text-sm text-red-600">Email is required</p>
+              )}
+            </div>
 
-              {/* Password Field */}
-              <Box sx={{ mb: 1 }}>
-                <Typography variant="body2" sx={{ 
-                  fontWeight: '600', 
-                  color: colors.textDark, 
-                  mb: 1,
-                  fontFamily: '"Poppins", sans-serif'
-                }}>
-                  Password
-                </Typography>
-                <TextField
-                  fullWidth
-                  name="password"
+            {/* Password Field */}
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
+                Password
+                <span className="text-red-500 ml-1">*</span>
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <Lock className={`h-5 w-5 ${fieldErrors.password ? 'text-red-500' : 'text-gray-400'}`} />
+                </div>
+                <input
                   type={showPassword ? 'text' : 'password'}
-                  placeholder="Enter your password"
+                  name="password"
                   value={credentials.password}
                   onChange={handleChange}
+                  onBlur={handleBlur}
+                  disabled={isLoading}
+                  placeholder="Enter your password"
+                  className={`block w-full pl-10 pr-12 py-3 border rounded-xl focus:ring-2 bg-white transition-all duration-200 placeholder-gray-400 disabled:bg-gray-50 disabled:cursor-not-allowed ${getInputBorderColor('password')}`}
                   required
-                  disabled={isLoading}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <Lock sx={{ color: colors.textLight }} />
-                      </InputAdornment>
-                    ),
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <IconButton
-                          onClick={() => setShowPassword(!showPassword)}
-                          edge="end"
-                          sx={{ color: colors.textLight }}
-                          disabled={isLoading}
-                        >
-                          {showPassword ? <VisibilityOff /> : <Visibility />}
-                        </IconButton>
-                      </InputAdornment>
-                    ),
-                  }}
-                  sx={{
-                    '& .MuiOutlinedInput-root': {
-                      height: 50,
-                      backgroundColor: colors.white,
-                      borderRadius: 2,
-                      '& fieldset': {
-                        borderColor: colors.border,
-                      },
-                      '&:hover fieldset': {
-                        borderColor: colors.secondary,
-                      },
-                      '&.Mui-focused fieldset': {
-                        borderColor: colors.primary,
-                        borderWidth: 2,
-                      },
-                    },
-                  }}
                 />
-              </Box>
-
-              {/* Forgot Password Link */}
-              <Box sx={{ textAlign: 'right', mb: 3 }}>
-                <Link 
-                  component="button" 
-                  type="button"
-                  onClick={handleForgotPasswordClick}
-                  disabled={isLoading}
-                  sx={{ 
-                    color: colors.primary, 
-                    textDecoration: 'none', 
-                    fontSize: '0.875rem', 
-                    fontWeight: '500',
-                    fontFamily: '"Poppins", sans-serif',
-                    '&:hover': { 
-                      textDecoration: 'underline',
-                      cursor: 'pointer'
-                    },
-                    '&:disabled': {
-                      color: colors.textLight,
-                      cursor: 'not-allowed'
-                    }
-                  }}
-                >
-                  Forgot password?
-                </Link>
-              </Box>
-
-              {/* Login Button */}
-              <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                disabled={isLoading}
-                sx={{
-                  backgroundColor: colors.primary,
-                  height: 50,
-                  borderRadius: 2,
-                  fontWeight: 'bold',
-                  fontSize: '1rem',
-                  textTransform: 'none',
-                  boxShadow: `0 4px 12px ${colors.primary}40`,
-                  fontFamily: '"Poppins", sans-serif',
-                  '&:hover': {
-                    backgroundColor: colors.primary,
-                    filter: 'brightness(0.9)',
-                    boxShadow: `0 6px 20px ${colors.primary}60`,
-                    transform: 'translateY(-1px)',
-                  },
-                  '&:disabled': {
-                    backgroundColor: colors.textLight,
-                  },
-                  mb: 3,
-                  transition: 'all 0.3s ease',
-                }}
-              >
-                {isLoading ? 'Signing In...' : 'Sign In'}
-              </Button>
-
-              {/* Don't have an account? Sign up */}
-              <Box sx={{ textAlign: 'center', mb: 4 }}>
-                <Typography variant="body2" sx={{ 
-                  color: colors.textLight,
-                  fontFamily: '"Poppins", sans-serif',
-                  fontSize: '0.9rem'
-                }}>
-                  Don't have an account?{' '}
-                  <Link 
-                    component="button" 
+                <div className="absolute inset-y-0 right-0 flex items-center">
+                  {fieldErrors.password && touched.password && (
+                    <div className="pr-3">
+                      <AlertCircle className="h-5 w-5 text-red-500" />
+                    </div>
+                  )}
+                  <button
                     type="button"
-                    onClick={handleRegisterClick}
+                    onClick={() => setShowPassword(!showPassword)}
                     disabled={isLoading}
-                    sx={{ 
-                      color: colors.primary, 
-                      fontWeight: '600',
-                      textDecoration: 'none',
-                      '&:hover': { 
-                        textDecoration: 'underline',
-                        cursor: 'pointer'
-                      },
-                      '&:disabled': {
-                        color: colors.textLight,
-                        cursor: 'not-allowed'
-                      }
-                    }}
+                    className="pr-3 flex items-center text-gray-400 hover:text-gray-600 disabled:cursor-not-allowed"
                   >
-                    Sign up
-                  </Link>
-                </Typography>
-              </Box>
+                    {showPassword ? (
+                      <EyeOff className="h-5 w-5" />
+                    ) : (
+                      <Eye className="h-5 w-5" />
+                    )}
+                  </button>
+                </div>
+              </div>
+              {fieldErrors.password && touched.password && (
+                <p className="mt-1 text-sm text-red-600">Password is required</p>
+              )}
+            </div>
 
-              {/* Copyright Footer */}
-              <Box sx={{ 
-                textAlign: 'center', 
-                mt: 4,
-                pt: 3,
-                borderTop: `1px solid ${colors.border}`
-              }}>
-                <Typography variant="body2" sx={{ 
-                  color: colors.textLight,
-                  fontSize: '0.75rem',
-                  fontFamily: '"Poppins", sans-serif'
-                }}>
-                  © 2025 RLDS Pvt Limited. All rights reserved.
-                </Typography>
-              </Box>
-            </Box>
-          </Box>
-        </Grid>
+            {/* Forgot Password */}
+            <div className="flex justify-end">
+              <button
+                type="button"
+                onClick={handleForgotPasswordClick}
+                disabled={isLoading}
+                className="text-sm text-blue-600 hover:text-blue-700 font-medium transition-colors duration-200 disabled:text-gray-400 disabled:cursor-not-allowed"
+              >
+                Forgot password?
+              </button>
+            </div>
 
-        {/* Right Side - Desktop Template with Dashboard */}
-        <Grid item xs={12} md={6} sx={{ 
-          display: { xs: 'none', md: 'flex' },
-          alignItems: 'center',
-          justifyContent: 'center',
-          backgroundColor: colors.primary,
-          background: `linear-gradient(135deg, ${colors.primary} 0%, ${colors.secondary} 100%)`,
-          position: 'relative',
-          overflow: 'hidden',
-          p: 3
-        }}>
+            {/* Login Button */}
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 px-4 rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none"
+            >
+              {isLoading ? (
+                <div className="flex items-center justify-center space-x-2">
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  <span>Signing In...</span>
+                </div>
+              ) : (
+                'Sign In'
+              )}
+            </button>
+
+            {/* Register Link */}
+            <div className="text-center pt-4">
+              <p className="text-gray-600 text-sm">
+                Don't have an account?{' '}
+                <button
+                  type="button"
+                  onClick={handleRegisterClick}
+                  disabled={isLoading}
+                  className="text-blue-600 hover:text-blue-700 font-semibold transition-colors duration-200 disabled:text-gray-400 disabled:cursor-not-allowed"
+                >
+                  Sign up
+                </button>
+              </p>
+            </div>
+
+            {/* Copyright */}
+            <div className="pt-6 border-t border-gray-200 text-center">
+              <p className="text-gray-500 text-xs">
+                © 2025 RLDS Pvt Limited. All rights reserved.
+              </p>
+            </div>
+          </form>
+        </div>
+
+        {/* Right Side - Dashboard Preview */}
+        <div className="hidden lg:block relative">
+          {/* Background Decorations */}
+          <div className="absolute -top-20 -right-20 w-80 h-80 bg-gradient-to-br from-blue-500/10 to-purple-500/10 rounded-full blur-3xl"></div>
+          <div className="absolute -bottom-20 -left-20 w-80 h-80 bg-gradient-to-br from-purple-500/10 to-pink-500/10 rounded-full blur-3xl"></div>
           
-          {/* Background Elements */}
-          <Box sx={{
-            position: 'absolute',
-            top: -100,
-            right: -100,
-            width: 400,
-            height: 400,
-            borderRadius: '50%',
-            background: 'rgba(255, 255, 255, 0.1)',
-            zIndex: 1,
-          }} />
-          
-          <Box sx={{
-            position: 'absolute',
-            bottom: -150,
-            left: -150,
-            width: 500,
-            height: 500,
-            borderRadius: '50%',
-            background: 'rgba(255, 255, 255, 0.05)',
-            zIndex: 1,
-          }} />
-
-          <Box sx={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            background: `
-              radial-gradient(circle at 20% 80%, rgba(255,255,255,0.1) 0%, transparent 50%),
-              radial-gradient(circle at 80% 20%, rgba(255,255,255,0.1) 0%, transparent 50%)
-            `,
-            zIndex: 2,
-          }} />
-
-          {/* Main Content */}
-          <Box sx={{ 
-            position: 'relative', 
-            zIndex: 3, 
-            width: '100%', 
-            maxWidth: 500,
-            color: 'white',
-            textAlign: 'center'
-          }}>
+          {/* Dashboard Preview Container - Shadow Removed */}
+          <div className="relative bg-white/80 backdrop-blur-sm rounded-3xl border border-white/20 p-8 ">
             
-            <Box sx={{ mb: 3 }}>
-              <Typography variant="h2" sx={{ 
-                fontWeight: 'bold', 
-                mb: 2,
-                fontSize: '2rem',
-                lineHeight: 1.2,
-                fontFamily: '"Poppins", "Roboto", "Helvetica", "Arial", sans-serif',
-                textShadow: '0 2px 4px rgba(0,0,0,0.3)'
-              }}>
-                Beyond investigations, we build assurance.
-              </Typography>
-              <Typography variant="h4" sx={{ 
-                opacity: 0.9,
-                fontSize: '1rem',
-                lineHeight: 1.4,
-                fontFamily: '"Poppins", "Roboto", "Helvetica", "Arial", sans-serif',
-                fontWeight: 300
-              }}>
-                Your security is our highest priority.
-              </Typography>
-            </Box>
+            {/* Dashboard Header */}
+            <div className="flex items-center justify-between mb-8">
+              <div className="flex items-center space-x-3">
+                <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl flex items-center justify-center">
+                  <Shield className="w-6 h-6 text-white" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-gray-900 text-lg">Verification Hub</h3>
+                  <p className="text-gray-500 text-sm">RLDS Dashboard v2.1</p>
+                </div>
+              </div>
+              <div className="flex space-x-1">
+                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
+                <div className="w-2 h-2 bg-red-500 rounded-full"></div>
+              </div>
+            </div>
 
-            {/* Dashboard Preview */}
-            <Box sx={{
-              backgroundColor: colors.white,
-              borderRadius: 2,
-              padding: 1.5,
-              boxShadow: '0 20px 40px rgba(0, 0, 0, 0.3)',
-              border: `2px solid ${colors.border}`,
-              maxWidth: 450,
-              margin: '0 auto',
-              position: 'relative',
-              transform: 'scale(0.9)'
-            }}>
-              
-              <Box sx={{
-                height: 20,
-                backgroundColor: colors.lightBg,
-                borderTopLeftRadius: 6,
-                borderTopRightRadius: 6,
-                display: 'flex',
-                alignItems: 'center',
-                px: 1.5,
-                mb: 1.5
-              }}>
-                <Box sx={{ display: 'flex', gap: 0.5 }}>
-                  <Box sx={{ width: 8, height: 8, borderRadius: '50%', backgroundColor: colors.primary }} />
-                  <Box sx={{ width: 8, height: 8, borderRadius: '50%', backgroundColor: colors.secondary }} />
-                  <Box sx={{ width: 8, height: 8, borderRadius: '50%', backgroundColor: '#10b981' }} />
-                </Box>
-                <Typography variant="body2" sx={{ 
-                  color: colors.textLight, 
-                  fontWeight: 'medium',
-                  mx: 'auto',
-                  fontSize: '0.6rem',
-                  fontFamily: '"Poppins", sans-serif'
-                }}>
-                  RLDS Pvt Limited Dashboard v2.1
-                </Typography>
-              </Box>
+            {/* User Profile Card */}
+            <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl p-4 mb-6 border border-blue-100">
+              <div className="flex items-center space-x-3">
+                <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl flex items-center justify-center text-white font-bold text-sm">
+                  RR
+                </div>
+                <div className="flex-1">
+                  <h4 className="font-semibold text-gray-900">Welcome Back</h4>
+                  <p className="text-gray-600 text-sm">Ready to continue your work</p>
+                </div>
+                <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+              </div>
+            </div>
 
-              <Box sx={{ 
-                backgroundColor: colors.lightBg,
-                borderRadius: 1,
-                p: 1,
-                minHeight: 250
-              }}>
-                
-                {/* Profile Container */}
-                <Box sx={{ 
-                  display: 'flex', 
-                  alignItems: 'center', 
-                  padding: '6px 8px',
-                  backgroundColor: colors.white,
-                  borderRadius: '6px',
-                  border: `1px solid ${colors.border}`,
-                  marginBottom: '8px'
-                }}>
-                  <Box sx={{ 
-                    width: 28, 
-                    height: 28, 
-                    borderRadius: '50%',
-                    marginRight: '6px',
-                    background: `linear-gradient(45deg, ${colors.primary}, ${colors.secondary})`,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    color: 'white',
-                    fontSize: '12px',
-                    fontWeight: 'bold'
-                  }}>
-                    RR
-                  </Box>
-                  <Box sx={{ flex: 1 }}>
-                    <Typography variant="body2" sx={{ 
-                      fontSize: '11px',
-                      fontWeight: '600',
-                      color: colors.textDark,
-                      margin: 0,
-                      lineHeight: 1.2
-                    }}>
-                      Welcome Back
-                    </Typography>
-                    <Typography variant="body2" sx={{ 
-                      fontSize: '9px',
-                      color: colors.textLight,
-                      margin: 0,
-                      lineHeight: 1.2
-                    }}>
-                      Ready to continue your work
-                    </Typography>
-                  </Box>
-                  <Box sx={{ 
-                    width: 6, 
-                    height: 6, 
-                    borderRadius: '50%',
-                    background: colors.primary,
-                    marginLeft: '3px'
-                  }} />
-                </Box>
+            {/* Stats Grid */}
+            <div className="grid grid-cols-2 gap-4 mb-6">
+              {stats.map((stat, index) => (
+                <div 
+                  key={index}
+                  className="bg-white rounded-xl p-4 border border-gray-200 transition-all duration-200"
+                >
+                  <div className="flex items-center space-x-3">
+                    <div className={`p-2 rounded-lg bg-blue-50`}>
+                      {index === 0 && <Users className="w-4 h-4 text-blue-600" />}
+                      {index === 1 && <AlertCircle className="w-4 h-4 text-yellow-600" />}
+                      {index === 2 && <CheckCircle2 className="w-4 h-4 text-green-600" />}
+                      {index === 3 && <BarChart3 className="w-4 h-4 text-purple-600" />}
+                    </div>
+                    <div>
+                      <p className={`text-lg font-bold ${stat.color}`}>
+                        {stat.value}
+                      </p>
+                      <p className="text-gray-600 text-xs font-medium">
+                        {stat.label}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
 
-                {/* Stats Grid */}
-                <Grid container spacing={0.5} sx={{ mb: 1.5 }}>
-                  {verificationStats.map((stat, index) => (
-                    <Grid item xs={6} key={index}>
-                      <Card sx={{ 
-                        backgroundColor: colors.white,
-                        border: `1px solid ${colors.border}`,
-                        borderRadius: 1,
-                        p: 0.3,
-                        height: '100%',
-                        boxShadow: '0 1px 3px rgba(0,0,0,0.05)'
-                      }}>
-                        <CardContent sx={{ p: '2px !important', display: 'flex', alignItems: 'center' }}>
-                          <Box sx={{ 
-                            backgroundColor: `${stat.color}15`, 
-                            borderRadius: 0.5, 
-                            p: 0.3,
-                            mr: 0.5 
-                          }}>
-                            {React.cloneElement(stat.icon, { sx: { color: stat.color, fontSize: 12 } })}
-                          </Box>
-                          <Box>
-                            <Typography variant="h6" sx={{ 
-                              fontWeight: 'bold', 
-                              color: stat.color,
-                              fontSize: '0.8rem',
-                              lineHeight: 1,
-                              fontFamily: '"Poppins", sans-serif'
-                            }}>
-                              {stat.value}
-                            </Typography>
-                            <Typography variant="body2" sx={{ 
-                              color: colors.textLight, 
-                              fontSize: '0.55rem',
-                              lineHeight: 1,
-                              fontFamily: '"Poppins", sans-serif'
-                            }}>
-                              {stat.label}
-                            </Typography>
-                          </Box>
-                        </CardContent>
-                      </Card>
-                    </Grid>
-                  ))}
-                </Grid>
+            {/* Quick Actions */}
+            <div className="bg-gray-50 rounded-2xl p-4 border border-gray-200">
+              <h4 className="font-semibold text-gray-900 mb-3 text-sm">Quick Actions</h4>
+              <div className="grid grid-cols-3 gap-2">
+                {['Verify Document', 'New Scan', 'Generate Report'].map((action, index) => (
+                  <button
+                    key={index}
+                    className="bg-white text-blue-600 text-xs font-semibold py-2 px-3 rounded-lg border border-blue-200 hover:bg-blue-50 transition-all duration-200 hover:scale-105"
+                  >
+                    {action}
+                  </button>
+                ))}
+              </div>
+            </div>
 
-                {/* Quick Actions */}
-                <Box sx={{ display: 'flex', gap: 0.5, justifyContent: 'center' }}>
-                  {['Verify', 'Scan', 'Report'].map((action) => (
-                    <Button
-                      key={action}
-                      size="small"
-                      sx={{
-                        color: colors.primary,
-                        backgroundColor: `${colors.primary}10`,
-                        border: `1px solid ${colors.primary}30`,
-                        borderRadius: 1,
-                        p: 0.5,
-                        minWidth: 'auto',
-                        fontSize: '0.5rem',
-                        fontWeight: '600',
-                        '&:hover': {
-                          backgroundColor: colors.primary,
-                          color: colors.white
-                        }
-                      }}
-                    >
-                      {action}
-                    </Button>
-                  ))}
-                </Box>
-              </Box>
+            {/* Recent Activity Preview */}
+            <div className="mt-6">
+              <div className="flex items-center justify-between mb-3">
+                <h4 className="font-semibold text-gray-900 text-sm">Recent Activity</h4>
+                <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
+              </div>
+              <div className="space-y-2">
+                {[
+                  'Document #INV-001 verified',
+                  'New verification request received',
+                  'Report generated for Client A'
+                ].map((activity, index) => (
+                  <div key={index} className="flex items-center space-x-2 text-xs text-gray-600">
+                    <div className="w-1.5 h-1.5 bg-green-500 rounded-full"></div>
+                    <span>{activity}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
 
-              <Box sx={{
-                width: 60,
-                height: 10,
-                backgroundColor: colors.border,
-                margin: '0 auto',
-                borderBottomLeftRadius: 4,
-                borderBottomRightRadius: 4
-              }} />
-            </Box>
-          </Box>
-        </Grid>
-      </Grid>
-    </Box>
+            {/* Bottom Decoration */}
+            <div className="absolute -bottom-4 left-1/2 transform -translate-x-1/2 w-24 h-2 bg-gray-300 rounded-full"></div>
+          </div>
+
+          {/* Floating Elements */}
+          <div className="absolute -top-4 -right-4 w-8 h-8 bg-yellow-400 rounded-full animate-bounce"></div>
+          <div className="absolute -bottom-4 -left-4 w-6 h-6 bg-green-400 rounded-full animate-bounce animation-delay-1000"></div>
+        </div>
+      </div>
+    </div>
   );
 };
 

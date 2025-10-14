@@ -1,0 +1,108 @@
+/* Brand gradient CSS classes */
+
+.brand-gradient-primary {
+  background: linear-gradient(135deg, #0f1f3b 0%, #256dbe 100%);
+}
+
+.brand-gradient-secondary {
+  background: linear-gradient(135deg, #153e74 0%, #4facfe 100%);
+}
+
+.brand-gradient-panel {
+  background: linear-gradient(135deg, #0f1f3b 0%, #153e74 5%, #256dbe 50%, #4facfe 100%);
+}
+
+.brand-gradient-panel-soft {
+  background: linear-gradient(135deg, rgba(15,31,59,0.04) 0%, rgba(21,62,116,0.06) 35%, rgba(37,109,190,0.06) 70%, rgba(79,172,254,0.08) 100%);
+}
+
+.brand-gradient-success {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+}
+
+.brand-gradient-warning {
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+}
+
+.brand-gradient-error {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+}
+
+.brand-gradient-info {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+}
+
+.brand-gradient-bg-light {
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+}
+
+.brand-gradient-bg-blue {
+  background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+}
+
+.brand-gradient-bg-purple {
+  background: linear-gradient(135deg, #e9d5ff 0%, #ddd6fe 100%);
+}
+
+.brand-gradient-avatar {
+  background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+}
+
+.brand-gradient-profile-header {
+  background: linear-gradient(135deg, #1e40af 0%, #7c3aed 100%);
+}
+
+/* Text gradients */
+.brand-text-gradient-accent {
+  background: linear-gradient(90deg, #4facfe 0%, #a445b2 60%, #6a11cb 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.brand-text-gradient-primary {
+  background: linear-gradient(90deg, #0f1f3b 0%, #256dbe 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.brand-text-gradient-hero {
+  background: linear-gradient(90deg, #1e40af 0%, #7c3aed 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.brand-text-gradient-title {
+  background: linear-gradient(90deg, #0f172a 0%, #334155 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Hover variants */
+.brand-gradient-primary-hover:hover {
+  background: linear-gradient(135deg, #0a1a33 0%, #1e5aa8 100%);
+}
+
+.brand-gradient-secondary-hover:hover {
+  background: linear-gradient(135deg, #0f3660 0%, #3a96e8 100%);
+}
+
+/* Button specific gradients */
+.brand-button-gradient {
+  background: linear-gradient(135deg, #0f1f3b 0%, #256dbe 100%);
+  transition: all 0.2s ease;
+}
+
+.brand-button-gradient:hover {
+  background: linear-gradient(135deg, #0a1a33 0%, #1e5aa8 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(15, 31, 59, 0.3);
+}
+
+.brand-button-gradient:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(15, 31, 59, 0.3);
+}

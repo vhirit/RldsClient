@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import {
   Search,
@@ -24,7 +23,7 @@ import {
   CheckCircle,
   Clock,
   AlertCircle,
-  X
+  X,
 } from "lucide-react";
 
 export default function InvoiceList() {
@@ -38,7 +37,7 @@ export default function InvoiceList() {
     fromDate: "",
     toDate: "",
     customer: "",
-    bankName: ""
+    bankName: "",
   });
 
   // Mock data with bank names
@@ -52,23 +51,23 @@ export default function InvoiceList() {
             id: "INV-001",
             customer: "John Doe",
             customerEmail: "john@example.com",
-            amount: 1250.00,
+            amount: 1250.0,
             status: "paid",
             createdAt: "2024-01-15",
             dueDate: "2024-02-15",
             items: 3,
-            bankName: "SBI"
+            bankName: "SBI",
           },
           {
             id: "INV-002",
             customer: "Sarah Smith",
             customerEmail: "sarah@example.com",
-            amount: 890.50,
+            amount: 890.5,
             status: "pending",
             createdAt: "2024-01-16",
             dueDate: "2024-02-16",
             items: 2,
-            bankName: "HDFC"
+            bankName: "HDFC",
           },
           {
             id: "INV-003",
@@ -79,18 +78,18 @@ export default function InvoiceList() {
             createdAt: "2024-01-10",
             dueDate: "2024-01-31",
             items: 5,
-            bankName: "Union Bank"
+            bankName: "Union Bank",
           },
           {
             id: "INV-004",
             customer: "Emily Brown",
             customerEmail: "emily@example.com",
-            amount: 450.00,
+            amount: 450.0,
             status: "paid",
             createdAt: "2024-01-18",
             dueDate: "2024-02-18",
             items: 1,
-            bankName: "SBI"
+            bankName: "SBI",
           },
           {
             id: "INV-005",
@@ -101,19 +100,19 @@ export default function InvoiceList() {
             createdAt: "2024-01-20",
             dueDate: "2024-02-20",
             items: 4,
-            bankName: "HDFC"
+            bankName: "HDFC",
           },
           {
             id: "INV-006",
             customer: "Lisa Anderson",
             customerEmail: "lisa@example.com",
-            amount: 3200.00,
+            amount: 3200.0,
             status: "paid",
             createdAt: "2024-01-22",
             dueDate: "2024-02-22",
             items: 6,
-            bankName: "Union Bank"
-          }
+            bankName: "Union Bank",
+          },
         ]);
         setLoading(false);
       }, 1000);
@@ -125,14 +124,18 @@ export default function InvoiceList() {
   // Toggle single invoice selection
   const toggleInvoiceSelection = (id) => {
     setSelectedInvoices((prev) =>
-      prev.includes(id) ? prev.filter((invoiceId) => invoiceId !== id) : [...prev, id]
+      prev.includes(id)
+        ? prev.filter((invoiceId) => invoiceId !== id)
+        : [...prev, id]
     );
   };
 
   // Toggle all invoices selection
   const toggleAllSelection = () => {
     setSelectedInvoices((prev) =>
-      prev.length === filteredInvoices.length ? [] : filteredInvoices.map((invoice) => invoice.id)
+      prev.length === filteredInvoices.length
+        ? []
+        : filteredInvoices.map((invoice) => invoice.id)
     );
   };
 
@@ -142,7 +145,7 @@ export default function InvoiceList() {
       alert("Please select invoices to download");
       return;
     }
-    
+
     console.log("Downloading invoices:", selectedInvoices);
     alert(`Downloading ${selectedInvoices.length} invoice(s)`);
   };
@@ -160,20 +163,30 @@ export default function InvoiceList() {
 
   // Filter invoices based on search and filters
   const filteredInvoices = invoices.filter((invoice) => {
-    const matchesSearch = 
+    const matchesSearch =
       invoice.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
       invoice.customer.toLowerCase().includes(searchTerm.toLowerCase()) ||
       invoice.customerEmail.toLowerCase().includes(searchTerm.toLowerCase()) ||
       invoice.bankName.toLowerCase().includes(searchTerm.toLowerCase());
-    
+
     const matchesStatus = !filters.status || invoice.status === filters.status;
-    const matchesCustomer = !filters.customer || invoice.customer.toLowerCase().includes(filters.customer.toLowerCase());
-    const matchesBank = !filters.bankName || invoice.bankName === filters.bankName;
-    
-    const matchesDate = (!filters.fromDate || invoice.createdAt >= filters.fromDate) &&
-                       (!filters.toDate || invoice.createdAt <= filters.toDate);
-    
-    return matchesSearch && matchesStatus && matchesCustomer && matchesBank && matchesDate;
+    const matchesCustomer =
+      !filters.customer ||
+      invoice.customer.toLowerCase().includes(filters.customer.toLowerCase());
+    const matchesBank =
+      !filters.bankName || invoice.bankName === filters.bankName;
+
+    const matchesDate =
+      (!filters.fromDate || invoice.createdAt >= filters.fromDate) &&
+      (!filters.toDate || invoice.createdAt <= filters.toDate);
+
+    return (
+      matchesSearch &&
+      matchesStatus &&
+      matchesCustomer &&
+      matchesBank &&
+      matchesDate
+    );
   });
 
   // Get status config with icons
@@ -184,28 +197,28 @@ export default function InvoiceList() {
           color: "bg-green-50 text-green-700 border border-green-200",
           icon: <CheckCircle className="w-4 h-4" />,
           text: "Paid",
-          badgeColor: "bg-green-500"
+          badgeColor: "bg-green-500",
         };
       case "pending":
         return {
           color: "bg-yellow-50 text-yellow-700 border border-yellow-200",
           icon: <Clock className="w-4 h-4" />,
           text: "Pending",
-          badgeColor: "bg-yellow-500"
+          badgeColor: "bg-yellow-500",
         };
       case "overdue":
         return {
           color: "bg-red-50 text-red-700 border border-red-200",
           icon: <AlertCircle className="w-4 h-4" />,
           text: "Overdue",
-          badgeColor: "bg-red-500"
+          badgeColor: "bg-red-500",
         };
       default:
         return {
           color: "bg-gray-50 text-gray-700 border border-gray-200",
           icon: <Clock className="w-4 h-4" />,
           text: status,
-          badgeColor: "bg-gray-500"
+          badgeColor: "bg-gray-500",
         };
     }
   };
@@ -226,18 +239,18 @@ export default function InvoiceList() {
 
   // Format currency
   const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD'
+    return new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: "USD",
     }).format(amount);
   };
 
   // Format date
   const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric'
+    return new Date(dateString).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
     });
   };
 
@@ -248,89 +261,111 @@ export default function InvoiceList() {
       fromDate: "",
       toDate: "",
       customer: "",
-      bankName: ""
+      bankName: "",
     });
     setSearchTerm("");
   };
 
   // Check if any filter is active
   const hasActiveFilters = () => {
-    return searchTerm || 
-           filters.status || 
-           filters.bankName || 
-           filters.customer || 
-           filters.fromDate || 
-           filters.toDate;
+    return (
+      searchTerm ||
+      filters.status ||
+      filters.bankName ||
+      filters.customer ||
+      filters.fromDate ||
+      filters.toDate
+    );
   };
 
   // Stats Cards Component
- // Stats Cards Component with Left Border Only
-const StatsCards = () => {
-  const stats = [
-    {
-      label: "Total Invoices",
-      value: invoices.length,
-      icon: FileText,
-      borderColor: "border-l-blue-500",
-      trend: "+12%",
-      description: "All invoices"
-    },
-    {
-      label: "Total Revenue",
-      value: formatCurrency(invoices.reduce((sum, inv) => sum + inv.amount, 0)),
-      icon: DollarSign,
-      borderColor: "border-l-green-500",
-      trend: "+18%",
-      description: "Total amount"
-    },
-    {
-      label: "Pending",
-      value: invoices.filter(inv => inv.status === 'pending').length,
-      icon: Clock,
-      borderColor: "border-l-yellow-500",
-      trend: "+5%",
-      description: "Awaiting payment"
-    },
-    {
-      label: "Overdue",
-      value: invoices.filter(inv => inv.status === 'overdue').length,
-      icon: AlertCircle,
-      borderColor: "border-l-red-500",
-      trend: "+2%",
-      description: "Requires attention"
-    }
-  ];
+  // Stats Cards Component with Left Border Only
+  const StatsCards = () => {
+    const stats = [
+      {
+        label: "Total Invoices",
+        value: invoices.length,
+        icon: FileText,
+        borderColor: "border-l-blue-500",
+        trend: "+12%",
+        description: "All invoices",
+      },
+      {
+        label: "Total Revenue",
+        value: formatCurrency(
+          invoices.reduce((sum, inv) => sum + inv.amount, 0)
+        ),
+        icon: DollarSign,
+        borderColor: "border-l-green-500",
+        trend: "+18%",
+        description: "Total amount",
+      },
+      {
+        label: "Pending",
+        value: invoices.filter((inv) => inv.status === "pending").length,
+        icon: Clock,
+        borderColor: "border-l-yellow-500",
+        trend: "+5%",
+        description: "Awaiting payment",
+      },
+      {
+        label: "Overdue",
+        value: invoices.filter((inv) => inv.status === "overdue").length,
+        icon: AlertCircle,
+        borderColor: "border-l-red-500",
+        trend: "+2%",
+        description: "Requires attention",
+      },
+    ];
 
-  return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-      {stats.map((stat, index) => {
-        const IconComponent = stat.icon;
-        return (
-          <div 
-            key={index} 
-            className={`bg-white rounded-2xl shadow-sm border-l-4 ${stat.borderColor} border-t border-r border-b border-gray-100 p-6 hover:shadow-md transition-all duration-300 group`}
-          >
-            <div className="flex items-center justify-between mb-4">
-              <div className={`p-3 rounded-xl ${stat.borderColor.replace('border-l-', 'bg-')} bg-opacity-10 group-hover:scale-110 transition-transform duration-200`}>
-                <IconComponent className={`w-6 h-6 ${stat.borderColor.replace('border-l-', 'text-')}`} />
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        {stats.map((stat, index) => {
+          const IconComponent = stat.icon;
+          return (
+            <div
+              key={index}
+              className={`bg-white rounded-2xl shadow-sm border-l-4 ${stat.borderColor} border-t border-r border-b border-gray-100 p-6 hover:shadow-md transition-all duration-300 group`}
+            >
+              <div className="flex items-center justify-between mb-4">
+                <div
+                  className={`p-3 rounded-xl ${stat.borderColor.replace(
+                    "border-l-",
+                    "bg-"
+                  )} bg-opacity-10 group-hover:scale-110 transition-transform duration-200`}
+                >
+                  <IconComponent
+                    className={`w-6 h-6 ${stat.borderColor.replace(
+                      "border-l-",
+                      "text-"
+                    )}`}
+                  />
+                </div>
+                <span
+                  className={`text-xs font-medium px-2 py-1 rounded-full ${
+                    stat.trend.startsWith("+")
+                      ? "bg-green-100 text-green-800"
+                      : "bg-red-100 text-red-800"
+                  }`}
+                >
+                  {stat.trend}
+                </span>
               </div>
-              <span className={`text-xs font-medium px-2 py-1 rounded-full ${
-                stat.trend.startsWith('+') ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-              }`}>
-                {stat.trend}
-              </span>
+              <div>
+                <p className="text-2xl font-bold text-gray-900 mb-1">
+                  {stat.value}
+                </p>
+                <p className="text-sm font-medium text-gray-600 mb-1">
+                  {stat.label}
+                </p>
+                <p className="text-xs text-gray-500">{stat.description}</p>
+              </div>
             </div>
-            <div>
-              <p className="text-2xl font-bold text-gray-900 mb-1">{stat.value}</p>
-              <p className="text-sm font-medium text-gray-600 mb-1">{stat.label}</p>
-              <p className="text-xs text-gray-500">{stat.description}</p>
-            </div>
-          </div>
-        );
-      })}
-    </div>
-  );
-};
+          );
+        })}
+      </div>
+    );
+  };
   return (
     <div className="p-6 bg-gradient-to-br from-gray-50 to-blue-50 min-h-screen">
       <div className="max-w-7xl mx-auto">
@@ -345,7 +380,7 @@ const StatsCards = () => {
               Manage and track all your invoices in one place
             </p>
           </div>
-          
+
           <div className="flex items-center space-x-3">
             {selectedInvoices.length > 0 && (
               <button
@@ -356,14 +391,27 @@ const StatsCards = () => {
                 <span>Download ({selectedInvoices.length})</span>
               </button>
             )}
-            <button 
+            <button
               onClick={() => window.location.reload()}
               className="flex items-center space-x-2 px-4 py-3 bg-white border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition-all duration-200 shadow-sm hover:shadow-md"
             >
               <RefreshCw className="w-4 h-4" />
               <span>Refresh</span>
             </button>
-            <button className="flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl hover:from-blue-700 hover:to-purple-700 transition-all duration-200 shadow-sm hover:shadow-md">
+
+            <button
+              type="button"
+              className="
+    flex items-center justify-center gap-2
+    px-6 py-3
+    bg-gradient-to-r from-blue-600 to-indigo-600
+    hover:from-blue-700 hover:to-indigo-700
+    text-white rounded-xl font-semibold text-sm
+    shadow-sm hover:shadow-md
+    transform hover:-translate-y-0.5
+    transition-all duration-200
+  "
+            >
               <Plus className="w-4 h-4" />
               <span>New Invoice</span>
             </button>
@@ -413,7 +461,9 @@ const StatsCards = () => {
                   <div className="relative">
                     <select
                       value={filters.status}
-                      onChange={(e) => setFilters({ ...filters, status: e.target.value })}
+                      onChange={(e) =>
+                        setFilters({ ...filters, status: e.target.value })
+                      }
                       className="w-full px-3 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white appearance-none shadow-sm"
                     >
                       <option value="">All Status</option>
@@ -434,7 +484,9 @@ const StatsCards = () => {
                     <Building className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
                     <select
                       value={filters.bankName}
-                      onChange={(e) => setFilters({ ...filters, bankName: e.target.value })}
+                      onChange={(e) =>
+                        setFilters({ ...filters, bankName: e.target.value })
+                      }
                       className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white shadow-sm"
                     >
                       <option value="">All Banks</option>
@@ -446,7 +498,7 @@ const StatsCards = () => {
                 </div>
 
                 {/* Filter Toggle Button */}
-                <button 
+                <button
                   className={`p-3 border rounded-xl transition-all duration-200 ${
                     hasActiveFilters()
                       ? "border-blue-500 bg-blue-500 text-white shadow-sm"
@@ -474,7 +526,7 @@ const StatsCards = () => {
                   </button>
                 )}
               </div>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {/* Customer Filter */}
                 <div>
@@ -487,7 +539,9 @@ const StatsCards = () => {
                       type="text"
                       placeholder="Filter by customer..."
                       value={filters.customer}
-                      onChange={(e) => setFilters({ ...filters, customer: e.target.value })}
+                      onChange={(e) =>
+                        setFilters({ ...filters, customer: e.target.value })
+                      }
                       className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
                     />
                   </div>
@@ -504,7 +558,9 @@ const StatsCards = () => {
                       <input
                         type="date"
                         value={filters.fromDate}
-                        onChange={(e) => setFilters({ ...filters, fromDate: e.target.value })}
+                        onChange={(e) =>
+                          setFilters({ ...filters, fromDate: e.target.value })
+                        }
                         className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
                       />
                     </div>
@@ -518,7 +574,9 @@ const StatsCards = () => {
                       <input
                         type="date"
                         value={filters.toDate}
-                        onChange={(e) => setFilters({ ...filters, toDate: e.target.value })}
+                        onChange={(e) =>
+                          setFilters({ ...filters, toDate: e.target.value })
+                        }
                         className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
                       />
                     </div>
@@ -526,7 +584,20 @@ const StatsCards = () => {
                 </div>
 
                 <div className="flex items-end">
-                  <button className="px-6 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-200 w-full">
+                  <button
+                    type="button"
+                    className="
+    w-full
+    flex items-center justify-center gap-2
+    px-6 py-3
+    bg-gradient-to-r from-blue-600 to-indigo-600
+    hover:from-blue-700 hover:to-indigo-700
+    text-white rounded-xl font-semibold text-sm
+    shadow-sm hover:shadow-md
+    transform hover:-translate-y-0.5
+    transition-all duration-200
+  "
+                  >
                     Apply Filters
                   </button>
                 </div>
@@ -543,7 +614,7 @@ const StatsCards = () => {
                     <input
                       type="checkbox"
                       checked={
-                        selectedInvoices.length === filteredInvoices.length && 
+                        selectedInvoices.length === filteredInvoices.length &&
                         filteredInvoices.length > 0
                       }
                       onChange={toggleAllSelection}
@@ -579,8 +650,12 @@ const StatsCards = () => {
                     <td colSpan="8" className="px-6 py-12 text-center">
                       <div className="flex flex-col items-center justify-center">
                         <RefreshCw className="w-8 h-8 text-blue-600 animate-spin mb-3" />
-                        <p className="text-gray-600 font-medium">Loading invoices...</p>
-                        <p className="text-gray-500 text-sm mt-1">Please wait while we fetch your invoices</p>
+                        <p className="text-gray-600 font-medium">
+                          Loading invoices...
+                        </p>
+                        <p className="text-gray-500 text-sm mt-1">
+                          Please wait while we fetch your invoices
+                        </p>
                       </div>
                     </td>
                   </tr>
@@ -590,13 +665,14 @@ const StatsCards = () => {
                       <div className="text-center">
                         <FileText className="w-16 h-16 mx-auto mb-4 text-gray-300" />
                         <h3 className="text-lg font-medium text-gray-900 mb-2">
-                          {hasActiveFilters() ? "No invoices match your filters" : "No invoices found"}
+                          {hasActiveFilters()
+                            ? "No invoices match your filters"
+                            : "No invoices found"}
                         </h3>
                         <p className="text-gray-500 mb-6 max-w-md mx-auto">
-                          {hasActiveFilters() 
+                          {hasActiveFilters()
                             ? "Try adjusting your search criteria or filters to find what you're looking for."
-                            : "Get started by creating your first invoice."
-                          }
+                            : "Get started by creating your first invoice."}
                         </p>
                         {hasActiveFilters() ? (
                           <button
@@ -617,7 +693,10 @@ const StatsCards = () => {
                   filteredInvoices.map((invoice) => {
                     const statusConfig = getStatusConfig(invoice.status);
                     return (
-                      <tr key={invoice.id} className="hover:bg-gray-50 transition-all duration-150 group">
+                      <tr
+                        key={invoice.id}
+                        className="hover:bg-gray-50 transition-all duration-150 group"
+                      >
                         <td className="px-6 py-4">
                           <input
                             type="checkbox"
@@ -628,14 +707,30 @@ const StatsCards = () => {
                         </td>
                         <td className="px-6 py-4">
                           <div className="flex items-center space-x-3">
-                            <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center text-white font-bold text-sm">
+                            <div
+                              className="
+    w-10 h-10
+    bg-gradient-to-r from-blue-600 to-indigo-600
+    hover:from-blue-700 hover:to-indigo-700
+    rounded-xl
+    flex items-center justify-center
+    text-white font-bold text-sm
+    transition-all duration-200
+    transform hover:-translate-y-0.5
+    shadow-sm hover:shadow-md
+    cursor-pointer
+  "
+                            >
                               <FileText className="w-5 h-5" />
                             </div>
+
                             <div>
                               <div className="font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">
                                 {invoice.id}
                               </div>
-                              <div className="text-sm text-gray-500">{invoice.items} items</div>
+                              <div className="text-sm text-gray-500">
+                                {invoice.items} items
+                              </div>
                             </div>
                           </div>
                         </td>
@@ -653,7 +748,11 @@ const StatsCards = () => {
                         </td>
                         <td className="px-6 py-4">
                           <div className="space-y-2">
-                            <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${getBankColor(invoice.bankName)}`}>
+                            <span
+                              className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${getBankColor(
+                                invoice.bankName
+                              )}`}
+                            >
                               <Building className="w-3 h-3 mr-1" />
                               {invoice.bankName}
                             </span>
@@ -663,7 +762,9 @@ const StatsCards = () => {
                           <div className="space-y-1 text-sm text-gray-600">
                             <div className="flex items-center space-x-1">
                               <Calendar className="w-3 h-3" />
-                              <span>Created: {formatDate(invoice.createdAt)}</span>
+                              <span>
+                                Created: {formatDate(invoice.createdAt)}
+                              </span>
                             </div>
                             <div className="flex items-center space-x-1">
                               <Calendar className="w-3 h-3" />
@@ -678,27 +779,29 @@ const StatsCards = () => {
                           </div>
                         </td>
                         <td className="px-6 py-4">
-                          <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${statusConfig.color}`}>
+                          <span
+                            className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${statusConfig.color}`}
+                          >
                             {statusConfig.icon}
                             <span className="ml-1">{statusConfig.text}</span>
                           </span>
                         </td>
                         <td className="px-6 py-4">
                           <div className="flex items-center space-x-1">
-                            <button 
+                            <button
                               onClick={() => handleDownload(invoice.id)}
                               className="p-2 hover:bg-blue-50 rounded-lg transition-all duration-200 text-blue-600 hover:scale-110"
                               title="Download"
                             >
                               <Download className="w-4 h-4" />
                             </button>
-                            <button 
+                            <button
                               className="p-2 hover:bg-green-50 rounded-lg transition-all duration-200 text-green-600 hover:scale-110"
                               title="View Details"
                             >
                               <Eye className="w-4 h-4" />
                             </button>
-                            <button 
+                            <button
                               className="p-2 hover:bg-purple-50 rounded-lg transition-all duration-200 text-purple-600 hover:scale-110"
                               title="Edit"
                             >

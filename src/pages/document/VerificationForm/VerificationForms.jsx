@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+
+import React, { useState, useEffect } from 'react';
 import { 
   FileText, 
   ArrowLeft, 
@@ -16,6 +17,7 @@ import {
   ChevronRight,
   ChevronLeft
 } from 'lucide-react';
+import { io } from 'socket.io-client';
 import VerificationTypeSelector from './VerificationTypeSelector';
 import StepNavigation from './StepNavigation';
 
@@ -45,6 +47,7 @@ const VerificationForm = () => {
   const [currentPage, setCurrentPage] = useState('type-selector'); // 'type-selector' or 'form-steps'
   const [currentStep, setCurrentStep] = useState(0);
   const [currentTypeIndex, setCurrentTypeIndex] = useState(0);
+  const [socket, setSocket] = useState(null);
   const [formData, setFormData] = useState({
     verificationType: '',
     selectedTypes: [],
@@ -76,6 +79,98 @@ const VerificationForm = () => {
   
   const [completedSteps, setCompletedSteps] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [documentNumberStatus, setDocumentNumberStatus] = useState('loading'); // 'loading', 'received', 'error'
+
+  // Initialize WebSocket connection
+  useEffect(() => {
+    const socketConnection = io('http://localhost:8080');
+    setSocket(socketConnection);
+
+    // Listen for document number updates
+    socketConnection.on('documentNumber', (data) => {
+      console.log('📄 Received document number in VerificationForm:', data);
+      const documentNumber = data.documentNumber || data;
+      setFormData(prev => ({
+        ...prev,
+        documentNumber: documentNumber
+      }));
+      setDocumentNumberStatus('received');
+    });
+
+    // Listen for verification data saved confirmation (from VerificationTypeSelector)
+    socketConnection.on('verificationDataSaved', (response) => {
+      console.log('✅ Verification data saved confirmation in VerificationForm:', response);
+      
+      // Handle different response formats from backend
+      let finalDocumentNumber = '';
+      
+      if (response.documentReferenceNumber) {
+        finalDocumentNumber = response.documentReferenceNumber;
+      } else if (response.document && response.document.documentReferenceNumber) {
+        finalDocumentNumber = response.document.documentReferenceNumber;
+      } else if (response.finalDocumentNumber) {
+        finalDocumentNumber = response.finalDocumentNumber;
+      }
+      
+      if (finalDocumentNumber) {
+        console.log('📄 Setting document number from backend response:', finalDocumentNumber);
+        setFormData(prev => ({
+          ...prev,
+          documentNumber: finalDocumentNumber
+        }));
+        setDocumentNumberStatus('received');
+      } else {
+        console.warn('⚠️ No document number found in backend response:', response);
+      }
+    });
+
+    // Listen for verification data save error
+    socketConnection.on('verificationDataError', (error) => {
+      console.error('❌ Verification data save error in VerificationForm:', error);
+      setDocumentNumberStatus('error');
+    });
+
+    // Listen for document number broadcast (when other users register)
+    socketConnection.on('documentNumberBroadcast', (data) => {
+      console.log('📡 Document number broadcast received in VerificationForm:', data);
+      // This is just for logging - don't change current user's document number
+    });
+
+    // Handle connection events
+    socketConnection.on('connect', () => {
+      console.log('✅ WebSocket connected for VerificationForm');
+      setDocumentNumberStatus('loading');
+    });
+
+    socketConnection.on('disconnect', () => {
+      console.log('❌ WebSocket disconnected for VerificationForm');
+      setDocumentNumberStatus('error');
+    });
+
+    socketConnection.on('error', (error) => {
+      console.error('❌ WebSocket error in VerificationForm:', error);
+      setDocumentNumberStatus('error');
+    });
+
+    return () => {
+      socketConnection.disconnect();
+    };
+  }, []);
+
+  // Request document number when verification types are selected
+  useEffect(() => {
+    if (socket && formData.selectedTypes.length > 0 && currentPage === 'form-steps' && !formData.documentNumber) {
+      console.log('📤 Requesting document number for selected types:', formData.selectedTypes);
+      socket.emit('requestDocumentNumber', { 
+        verificationType: formData.selectedTypes 
+      });
+    }
+  }, [socket, formData.selectedTypes, currentPage, formData.documentNumber]);
+
+  // Log formData changes for debugging
+  useEffect(() => {
+    console.log('🔄 FormData updated in VerificationForm:', formData);
+  }, [formData]);
 
   const getStepsForType = (type) => {
     const baseSteps = ['Administrative Details'];
@@ -94,6 +189,22 @@ const VerificationForm = () => {
   const stepsPerType = formData.selectedTypes.map((type) => getStepsForType(type));
 
   const handleTypeSelectionComplete = () => {
+    console.log('✅ Type selection complete, current formData:', formData);
+    
+    // Log current document number before transition
+    if (formData.documentNumber) {
+      console.log('📄 Document number preserved for form steps:', formData.documentNumber);
+    } else {
+      console.warn('⚠️ No document number available during transition to form steps');
+      // Request document number if not available
+      if (socket && formData.selectedTypes.length > 0) {
+        console.log('📤 Requesting document number during transition');
+        socket.emit('requestDocumentNumber', { 
+          verificationType: formData.selectedTypes 
+        });
+      }
+    }
+    
     setCurrentPage('form-steps');
     setCurrentStep(1); // Start with first step after administrative details
   };
@@ -236,7 +347,7 @@ const VerificationForm = () => {
     try {
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 2000));
-      console.log('Form submitted:', formData);
+      console.log('✅ Form submitted:', formData);
       
       // Reset form
       setFormData({
@@ -268,7 +379,7 @@ const VerificationForm = () => {
       setCurrentTypeIndex(0);
       setCompletedSteps({});
     } catch (error) {
-      console.error('Submission error:', error);
+      console.error('❌ Submission error:', error);
     } finally {
       setIsSubmitting(false);
     }
@@ -305,15 +416,35 @@ const VerificationForm = () => {
                   <div>
                     <h1 className="text-3xl font-bold text-gray-900">
                       {formData.verificationType ? 
-                        `${formData.verificationType.charAt(0).toUpperCase() + formData.verificationType.slice(1)} ` 
+                        `${formData.verificationType.charAt(0).toUpperCase() + formData.verificationType.slice(1)} Verification` 
                         : 'New Verification'
                       }
                     </h1>
-                    {formData.documentNumber && (
-                      <div className="flex items-center space-x-2 text-sm text-gray-600 mt-1">
-                        <FileText className="w-4 h-4" />
-                        <span>Document #: <span className="font-medium text-gray-900">{formData.documentNumber}</span></span>
-                      </div>
+                    {/* Enhanced Document Number Display */}
+                    <div className="flex items-center space-x-2 text-sm mt-1">
+                      <FileText className="w-4 h-4" />
+                      <span className="text-gray-600">Document #:</span>
+                      {formData.documentNumber ? (
+                        <span className="font-medium text-blue-600 bg-blue-50 px-2 py-1 rounded border border-blue-200">
+                          {formData.documentNumber}
+                        </span>
+                      ) : documentNumberStatus === 'loading' ? (
+                        <span className="font-medium text-orange-600 bg-orange-50 px-2 py-1 rounded border border-orange-200 flex items-center">
+                          <Clock className="w-3 h-3 mr-1 animate-spin" />
+                          Loading...
+                        </span>
+                      ) : (
+                        <span className="font-medium text-red-600 bg-red-50 px-2 py-1 rounded border border-red-200">
+                          Not Available
+                        </span>
+                      )}
+                    </div>
+                    
+                    {/* Additional status information */}
+                    {documentNumberStatus === 'error' && (
+                      <p className="text-xs text-red-600 mt-1">
+                        Unable to load document number. Please check your connection.
+                      </p>
                     )}
                   </div>
                 </div>

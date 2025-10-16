@@ -14,9 +14,10 @@ const DashboardHome = React.lazy(() => import("../pages/Dashboard/Index"));
 const UserTable = React.lazy(() => import("../pages/user/userTable"));
 const DocumentTable = React.lazy(() => import("../pages/document/documentList/documentLsit"));
 const InvoiceList = React.lazy(() => import("../pages/invoice/invoiceList"));
-// const DocumentCreate = React.lazy(() => import("../pages/document/MultiStepForm"));
-// const DocumentCreate = React.lazy(() => import("../pages/document/VerificationForm/VerificationForm"));
+
 const DocumentCreate = React.lazy(() => import("../pages/document/VerificationForm/VerificationForms"));
+const Branch = React.lazy(() => import("../pages/branch/branchCreate"));
+const Source = React.lazy(() => import("../pages/source/source"));
 // Loading component
 const LoadingSpinner = () => (
   <div className="flex items-center justify-center h-screen">
@@ -89,6 +90,8 @@ export default function AppRouter() {
             <Route path="kyc/documents" element={<DocumentTable />} />
             <Route path="invoice-list" element={<InvoiceList />} />
             <Route path="kyc/document-create" element={<DocumentCreate />} />
+            <Route path="branches" element={<Branch />} />
+            <Route path="source" element={<Source />} />
           </Route>
 
           {/* 404 fallback */}

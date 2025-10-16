@@ -1,6 +1,5 @@
-
 import React, { useState, useEffect } from "react";
-import { brandGradients } from '../../../config/gradients';
+import { brandGradients } from "../../../config/gradients";
 import {
   Search,
   Filter,
@@ -31,7 +30,7 @@ import {
   Briefcase,
   FileCheck,
   FileX,
-  Shield
+  Shield,
 } from "lucide-react";
 
 export default function LoanDocumentList() {
@@ -46,7 +45,7 @@ export default function LoanDocumentList() {
     toDate: "",
     customer: "",
     loanType: "",
-    verificationStatus: ""
+    verificationStatus: "",
   });
 
   // Mock data with loan types and verification status
@@ -60,7 +59,7 @@ export default function LoanDocumentList() {
             id: "LOAN-001",
             customer: "John Doe",
             customerEmail: "john@example.com",
-            loanAmount: 1250000.00,
+            loanAmount: 1250000.0,
             status: "approved",
             appliedDate: "2024-01-15",
             verificationDate: "2024-01-20",
@@ -70,14 +69,14 @@ export default function LoanDocumentList() {
               identity: true,
               income: true,
               property: true,
-              employment: true
-            }
+              employment: true,
+            },
           },
           {
             id: "LOAN-002",
             customer: "Sarah Smith",
             customerEmail: "sarah@example.com",
-            loanAmount: 890500.00,
+            loanAmount: 890500.0,
             status: "pending",
             appliedDate: "2024-01-16",
             verificationDate: "",
@@ -87,14 +86,14 @@ export default function LoanDocumentList() {
               identity: true,
               income: false,
               property: true,
-              employment: false
-            }
+              employment: false,
+            },
           },
           {
             id: "LOAN-003",
             customer: "Mike Johnson",
             customerEmail: "mike@example.com",
-            loanAmount: 500000.00,
+            loanAmount: 500000.0,
             status: "rejected",
             appliedDate: "2024-01-10",
             verificationDate: "2024-01-18",
@@ -104,14 +103,14 @@ export default function LoanDocumentList() {
               identity: true,
               income: false,
               property: false,
-              employment: true
-            }
+              employment: true,
+            },
           },
           {
             id: "LOAN-004",
             customer: "Emily Brown",
             customerEmail: "emily@example.com",
-            loanAmount: 2000000.00,
+            loanAmount: 2000000.0,
             status: "approved",
             appliedDate: "2024-01-18",
             verificationDate: "2024-01-25",
@@ -121,14 +120,14 @@ export default function LoanDocumentList() {
               identity: true,
               income: true,
               property: true,
-              employment: true
-            }
+              employment: true,
+            },
           },
           {
             id: "LOAN-005",
             customer: "David Wilson",
             customerEmail: "david@example.com",
-            loanAmount: 300000.00,
+            loanAmount: 300000.0,
             status: "pending",
             appliedDate: "2024-01-20",
             verificationDate: "",
@@ -138,14 +137,14 @@ export default function LoanDocumentList() {
               identity: true,
               income: true,
               property: false,
-              employment: false
-            }
+              employment: false,
+            },
           },
           {
             id: "LOAN-006",
             customer: "Lisa Anderson",
             customerEmail: "lisa@example.com",
-            loanAmount: 750000.00,
+            loanAmount: 750000.0,
             status: "approved",
             appliedDate: "2024-01-22",
             verificationDate: "2024-01-28",
@@ -155,9 +154,9 @@ export default function LoanDocumentList() {
               identity: true,
               income: true,
               property: true,
-              employment: true
-            }
-          }
+              employment: true,
+            },
+          },
         ]);
         setLoading(false);
       }, 1000);
@@ -176,7 +175,9 @@ export default function LoanDocumentList() {
   // Toggle all loans selection
   const toggleAllSelection = () => {
     setSelectedLoans((prev) =>
-      prev.length === filteredLoans.length ? [] : filteredLoans.map((loan) => loan.id)
+      prev.length === filteredLoans.length
+        ? []
+        : filteredLoans.map((loan) => loan.id)
     );
   };
 
@@ -186,7 +187,7 @@ export default function LoanDocumentList() {
       alert("Please select loans to download documents");
       return;
     }
-    
+
     console.log("Downloading loan documents:", selectedLoans);
     alert(`Downloading ${selectedLoans.length} loan document(s)`);
   };
@@ -204,21 +205,34 @@ export default function LoanDocumentList() {
 
   // Filter loans based on search and filters
   const filteredLoans = loans.filter((loan) => {
-    const matchesSearch = 
+    const matchesSearch =
       loan.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
       loan.customer.toLowerCase().includes(searchTerm.toLowerCase()) ||
       loan.customerEmail.toLowerCase().includes(searchTerm.toLowerCase()) ||
       loan.loanType.toLowerCase().includes(searchTerm.toLowerCase());
-    
+
     const matchesStatus = !filters.status || loan.status === filters.status;
-    const matchesCustomer = !filters.customer || loan.customer.toLowerCase().includes(filters.customer.toLowerCase());
-    const matchesLoanType = !filters.loanType || loan.loanType === filters.loanType;
-    const matchesVerification = !filters.verificationStatus || loan.verificationStatus === filters.verificationStatus;
-    
-    const matchesDate = (!filters.fromDate || loan.appliedDate >= filters.fromDate) &&
-                       (!filters.toDate || loan.appliedDate <= filters.toDate);
-    
-    return matchesSearch && matchesStatus && matchesCustomer && matchesLoanType && matchesVerification && matchesDate;
+    const matchesCustomer =
+      !filters.customer ||
+      loan.customer.toLowerCase().includes(filters.customer.toLowerCase());
+    const matchesLoanType =
+      !filters.loanType || loan.loanType === filters.loanType;
+    const matchesVerification =
+      !filters.verificationStatus ||
+      loan.verificationStatus === filters.verificationStatus;
+
+    const matchesDate =
+      (!filters.fromDate || loan.appliedDate >= filters.fromDate) &&
+      (!filters.toDate || loan.appliedDate <= filters.toDate);
+
+    return (
+      matchesSearch &&
+      matchesStatus &&
+      matchesCustomer &&
+      matchesLoanType &&
+      matchesVerification &&
+      matchesDate
+    );
   });
 
   // Get status config with icons
@@ -229,28 +243,28 @@ export default function LoanDocumentList() {
           color: "bg-green-50 text-green-700 border border-green-200",
           icon: <CheckCircle className="w-4 h-4" />,
           text: "Approved",
-          badgeColor: "bg-green-500"
+          badgeColor: "bg-green-500",
         };
       case "pending":
         return {
           color: "bg-yellow-50 text-yellow-700 border border-yellow-200",
           icon: <Clock className="w-4 h-4" />,
           text: "Pending",
-          badgeColor: "bg-yellow-500"
+          badgeColor: "bg-yellow-500",
         };
       case "rejected":
         return {
           color: "bg-red-50 text-red-700 border border-red-200",
           icon: <AlertCircle className="w-4 h-4" />,
           text: "Rejected",
-          badgeColor: "bg-red-500"
+          badgeColor: "bg-red-500",
         };
       default:
         return {
           color: "bg-gray-50 text-gray-700 border border-gray-200",
           icon: <Clock className="w-4 h-4" />,
           text: status,
-          badgeColor: "bg-gray-500"
+          badgeColor: "bg-gray-500",
         };
     }
   };
@@ -262,25 +276,25 @@ export default function LoanDocumentList() {
         return {
           color: "bg-green-50 text-green-700 border border-green-200",
           icon: <FileCheck className="w-4 h-4" />,
-          text: "Verified"
+          text: "Verified",
         };
       case "pending":
         return {
           color: "bg-yellow-50 text-yellow-700 border border-yellow-200",
           icon: <Clock className="w-4 h-4" />,
-          text: "Pending Verification"
+          text: "Pending Verification",
         };
       case "rejected":
         return {
           color: "bg-red-50 text-red-700 border border-red-200",
           icon: <FileX className="w-4 h-4" />,
-          text: "Verification Failed"
+          text: "Verification Failed",
         };
       default:
         return {
           color: "bg-gray-50 text-gray-700 border border-gray-200",
           icon: <Clock className="w-4 h-4" />,
-          text: status
+          text: status,
         };
     }
   };
@@ -292,56 +306,56 @@ export default function LoanDocumentList() {
         return {
           color: "bg-blue-50 text-blue-700 border border-blue-200",
           icon: <Home className="w-4 h-4" />,
-          text: "Home Loan"
+          text: "Home Loan",
         };
       case "car":
         return {
           color: "bg-purple-50 text-purple-700 border border-purple-200",
           icon: <Car className="w-4 h-4" />,
-          text: "Car Loan"
+          text: "Car Loan",
         };
       case "personal":
         return {
           color: "bg-orange-50 text-orange-700 border border-orange-200",
           icon: <User className="w-4 h-4" />,
-          text: "Personal Loan"
+          text: "Personal Loan",
         };
       case "education":
         return {
           color: "bg-green-50 text-green-700 border border-green-200",
           icon: <FileText className="w-4 h-4" />,
-          text: "Education Loan"
+          text: "Education Loan",
         };
       case "business":
         return {
           color: "bg-indigo-50 text-indigo-700 border border-indigo-200",
           icon: <Briefcase className="w-4 h-4" />,
-          text: "Business Loan"
+          text: "Business Loan",
         };
       default:
         return {
           color: "bg-gray-50 text-gray-700 border border-gray-200",
           icon: <CreditCard className="w-4 h-4" />,
-          text: type
+          text: type,
         };
     }
   };
 
   // Format currency
   const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD'
+    return new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: "USD",
     }).format(amount);
   };
 
   // Format date
   const formatDate = (dateString) => {
     if (!dateString) return "N/A";
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric'
+    return new Date(dateString).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
     });
   };
 
@@ -353,29 +367,31 @@ export default function LoanDocumentList() {
       toDate: "",
       customer: "",
       loanType: "",
-      verificationStatus: ""
+      verificationStatus: "",
     });
     setSearchTerm("");
   };
 
   // Check if any filter is active
   const hasActiveFilters = () => {
-    return searchTerm || 
-           filters.status || 
-           filters.loanType || 
-           filters.verificationStatus ||
-           filters.customer || 
-           filters.fromDate || 
-           filters.toDate;
+    return (
+      searchTerm ||
+      filters.status ||
+      filters.loanType ||
+      filters.verificationStatus ||
+      filters.customer ||
+      filters.fromDate ||
+      filters.toDate
+    );
   };
 
   // Document status component
   const DocumentStatus = ({ documents }) => {
     const documentTypes = [
-      { key: 'identity', label: 'ID Proof', icon: User },
-      { key: 'income', label: 'Income', icon: DollarSign },
-      { key: 'property', label: 'Property', icon: Home },
-      { key: 'employment', label: 'Employment', icon: Briefcase }
+      { key: "identity", label: "ID Proof", icon: User },
+      { key: "income", label: "Income", icon: DollarSign },
+      { key: "property", label: "Property", icon: Home },
+      { key: "employment", label: "Employment", icon: Briefcase },
     ];
 
     return (
@@ -386,11 +402,13 @@ export default function LoanDocumentList() {
             <div
               key={doc.key}
               className={`p-1 rounded-lg ${
-                documents[doc.key] 
-                  ? 'bg-green-100 text-green-700' 
-                  : 'bg-red-100 text-red-700'
+                documents[doc.key]
+                  ? "bg-green-100 text-green-700"
+                  : "bg-red-100 text-red-700"
               }`}
-              title={`${doc.label}: ${documents[doc.key] ? 'Submitted' : 'Pending'}`}
+              title={`${doc.label}: ${
+                documents[doc.key] ? "Submitted" : "Pending"
+              }`}
             >
               <IconComponent className="w-3 h-3" />
             </div>
@@ -409,32 +427,35 @@ export default function LoanDocumentList() {
         icon: FileText,
         borderColor: "border-l-blue-500",
         trend: "+8%",
-        description: "All loan applications"
+        description: "All loan applications",
       },
       {
         label: "Total Amount",
-        value: formatCurrency(loans.reduce((sum, loan) => sum + loan.loanAmount, 0)),
+        value: formatCurrency(
+          loans.reduce((sum, loan) => sum + loan.loanAmount, 0)
+        ),
         icon: DollarSign,
         borderColor: "border-l-green-500",
         trend: "+15%",
-        description: "Total loan amount"
+        description: "Total loan amount",
       },
       {
         label: "Pending Verification",
-        value: loans.filter(loan => loan.verificationStatus === 'pending').length,
+        value: loans.filter((loan) => loan.verificationStatus === "pending")
+          .length,
         icon: Clock,
         borderColor: "border-l-yellow-500",
         trend: "+3%",
-        description: "Awaiting verification"
+        description: "Awaiting verification",
       },
       {
         label: "Approved Loans",
-        value: loans.filter(loan => loan.status === 'approved').length,
+        value: loans.filter((loan) => loan.status === "approved").length,
         icon: CheckCircle,
         borderColor: "border-l-purple-500",
         trend: "+12%",
-        description: "Successfully approved"
-      }
+        description: "Successfully approved",
+      },
     ];
 
     return (
@@ -442,23 +463,41 @@ export default function LoanDocumentList() {
         {stats.map((stat, index) => {
           const IconComponent = stat.icon;
           return (
-            <div 
-              key={index} 
+            <div
+              key={index}
               className={`bg-white rounded-2xl shadow-sm border-l-4 ${stat.borderColor} border-t border-r border-b border-gray-100 p-6 hover:shadow-md transition-all duration-300 group`}
             >
               <div className="flex items-center justify-between mb-4">
-                <div className={`p-3 rounded-xl ${stat.borderColor.replace('border-l-', 'bg-')} bg-opacity-10 group-hover:scale-110 transition-transform duration-200`}>
-                  <IconComponent className={`w-6 h-6 ${stat.borderColor.replace('border-l-', 'text-')}`} />
+                <div
+                  className={`p-3 rounded-xl ${stat.borderColor.replace(
+                    "border-l-",
+                    "bg-"
+                  )} bg-opacity-10 group-hover:scale-110 transition-transform duration-200`}
+                >
+                  <IconComponent
+                    className={`w-6 h-6 ${stat.borderColor.replace(
+                      "border-l-",
+                      "text-"
+                    )}`}
+                  />
                 </div>
-                <span className={`text-xs font-medium px-2 py-1 rounded-full ${
-                  stat.trend.startsWith('+') ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-                }`}>
+                <span
+                  className={`text-xs font-medium px-2 py-1 rounded-full ${
+                    stat.trend.startsWith("+")
+                      ? "bg-green-100 text-green-800"
+                      : "bg-red-100 text-red-800"
+                  }`}
+                >
                   {stat.trend}
                 </span>
               </div>
               <div>
-                <p className="text-2xl font-bold text-gray-900 mb-1">{stat.value}</p>
-                <p className="text-sm font-medium text-gray-600 mb-1">{stat.label}</p>
+                <p className="text-2xl font-bold text-gray-900 mb-1">
+                  {stat.value}
+                </p>
+                <p className="text-sm font-medium text-gray-600 mb-1">
+                  {stat.label}
+                </p>
                 <p className="text-xs text-gray-500">{stat.description}</p>
               </div>
             </div>
@@ -482,7 +521,7 @@ export default function LoanDocumentList() {
               Manage and track all loan applications and documents
             </p>
           </div>
-          
+
           <div className="flex items-center space-x-3">
             {selectedLoans.length > 0 && (
               <button
@@ -493,14 +532,28 @@ export default function LoanDocumentList() {
                 <span>Download ({selectedLoans.length})</span>
               </button>
             )}
-            <button 
+            <button
               onClick={() => window.location.reload()}
               className="flex items-center space-x-2 px-4 py-3 bg-white border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition-all duration-200 shadow-sm hover:shadow-md"
             >
               <RefreshCw className="w-4 h-4" />
               <span>Refresh</span>
             </button>
-            <button className="flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl hover:from-blue-700 hover:to-purple-700 transition-all duration-200 shadow-sm hover:shadow-md">
+
+            <button
+              type="button"
+              className="
+    w-full
+    bg-gradient-to-r from-blue-600 to-indigo-600
+    hover:from-blue-700 hover:to-indigo-700
+    text-white px-6 py-3 rounded-xl font-semibold
+    flex items-center justify-center gap-2
+    shadow-sm hover:shadow-md
+    transform hover:-translate-y-0.5 transition-all duration-200
+    disabled:opacity-50 disabled:cursor-not-allowed
+    disabled:transform-none disabled:shadow-none
+  "
+            >
               <Plus className="w-4 h-4" />
               <span>New Loan Application</span>
             </button>
@@ -550,7 +603,9 @@ export default function LoanDocumentList() {
                   <div className="relative">
                     <select
                       value={filters.status}
-                      onChange={(e) => setFilters({ ...filters, status: e.target.value })}
+                      onChange={(e) =>
+                        setFilters({ ...filters, status: e.target.value })
+                      }
                       className="w-full px-3 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white appearance-none shadow-sm"
                     >
                       <option value="">All Status</option>
@@ -571,7 +626,9 @@ export default function LoanDocumentList() {
                     <CreditCard className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
                     <select
                       value={filters.loanType}
-                      onChange={(e) => setFilters({ ...filters, loanType: e.target.value })}
+                      onChange={(e) =>
+                        setFilters({ ...filters, loanType: e.target.value })
+                      }
                       className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white shadow-sm"
                     >
                       <option value="">All Types</option>
@@ -585,7 +642,7 @@ export default function LoanDocumentList() {
                 </div>
 
                 {/* Filter Toggle Button */}
-                <button 
+                <button
                   className={`p-3 border rounded-xl transition-all duration-200 ${
                     hasActiveFilters()
                       ? "border-blue-500 bg-blue-500 text-white shadow-sm"
@@ -613,7 +670,7 @@ export default function LoanDocumentList() {
                   </button>
                 )}
               </div>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {/* Customer Filter */}
                 <div>
@@ -626,7 +683,9 @@ export default function LoanDocumentList() {
                       type="text"
                       placeholder="Filter by customer..."
                       value={filters.customer}
-                      onChange={(e) => setFilters({ ...filters, customer: e.target.value })}
+                      onChange={(e) =>
+                        setFilters({ ...filters, customer: e.target.value })
+                      }
                       className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
                     />
                   </div>
@@ -641,7 +700,12 @@ export default function LoanDocumentList() {
                     <FileCheck className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
                     <select
                       value={filters.verificationStatus}
-                      onChange={(e) => setFilters({ ...filters, verificationStatus: e.target.value })}
+                      onChange={(e) =>
+                        setFilters({
+                          ...filters,
+                          verificationStatus: e.target.value,
+                        })
+                      }
                       className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
                     >
                       <option value="">All Verification</option>
@@ -663,7 +727,9 @@ export default function LoanDocumentList() {
                       <input
                         type="date"
                         value={filters.fromDate}
-                        onChange={(e) => setFilters({ ...filters, fromDate: e.target.value })}
+                        onChange={(e) =>
+                          setFilters({ ...filters, fromDate: e.target.value })
+                        }
                         className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
                       />
                     </div>
@@ -677,7 +743,9 @@ export default function LoanDocumentList() {
                       <input
                         type="date"
                         value={filters.toDate}
-                        onChange={(e) => setFilters({ ...filters, toDate: e.target.value })}
+                        onChange={(e) =>
+                          setFilters({ ...filters, toDate: e.target.value })
+                        }
                         className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
                       />
                     </div>
@@ -696,7 +764,7 @@ export default function LoanDocumentList() {
                     <input
                       type="checkbox"
                       checked={
-                        selectedLoans.length === filteredLoans.length && 
+                        selectedLoans.length === filteredLoans.length &&
                         filteredLoans.length > 0
                       }
                       onChange={toggleAllSelection}
@@ -732,8 +800,12 @@ export default function LoanDocumentList() {
                     <td colSpan="8" className="px-6 py-12 text-center">
                       <div className="flex flex-col items-center justify-center">
                         <RefreshCw className="w-8 h-8 text-blue-600 animate-spin mb-3" />
-                        <p className="text-gray-600 font-medium">Loading loan applications...</p>
-                        <p className="text-gray-500 text-sm mt-1">Please wait while we fetch your loan data</p>
+                        <p className="text-gray-600 font-medium">
+                          Loading loan applications...
+                        </p>
+                        <p className="text-gray-500 text-sm mt-1">
+                          Please wait while we fetch your loan data
+                        </p>
                       </div>
                     </td>
                   </tr>
@@ -743,13 +815,14 @@ export default function LoanDocumentList() {
                       <div className="text-center">
                         <FileText className="w-16 h-16 mx-auto mb-4 text-gray-300" />
                         <h3 className="text-lg font-medium text-gray-900 mb-2">
-                          {hasActiveFilters() ? "No loans match your filters" : "No loans found"}
+                          {hasActiveFilters()
+                            ? "No loans match your filters"
+                            : "No loans found"}
                         </h3>
                         <p className="text-gray-500 mb-6 max-w-md mx-auto">
-                          {hasActiveFilters() 
+                          {hasActiveFilters()
                             ? "Try adjusting your search criteria or filters to find what you're looking for."
-                            : "Get started by creating your first loan application."
-                          }
+                            : "Get started by creating your first loan application."}
                         </p>
                         {hasActiveFilters() ? (
                           <button
@@ -769,11 +842,16 @@ export default function LoanDocumentList() {
                 ) : (
                   filteredLoans.map((loan) => {
                     const statusConfig = getStatusConfig(loan.status);
-                    const verificationConfig = getVerificationConfig(loan.verificationStatus);
+                    const verificationConfig = getVerificationConfig(
+                      loan.verificationStatus
+                    );
                     const loanTypeConfig = getLoanTypeConfig(loan.loanType);
-                    
+
                     return (
-                      <tr key={loan.id} className="hover:bg-gray-50 transition-all duration-150 group">
+                      <tr
+                        key={loan.id}
+                        className="hover:bg-gray-50 transition-all duration-150 group"
+                      >
                         <td className="px-6 py-4">
                           <input
                             type="checkbox"
@@ -784,7 +862,18 @@ export default function LoanDocumentList() {
                         </td>
                         <td className="px-6 py-4">
                           <div className="flex items-center space-x-3">
-                            <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center text-white font-bold text-sm">
+                            <div
+                              className="
+    w-10 h-10
+    bg-gradient-to-r from-blue-600 to-indigo-600
+    hover:from-blue-700 hover:to-indigo-700
+    text-white rounded-xl font-semibold text-sm
+    flex items-center justify-center
+    shadow-sm hover:shadow-md
+    transform hover:-translate-y-0.5
+    transition-all duration-200
+  "
+                            >
                               <CreditCard className="w-5 h-5" />
                             </div>
                             <div>
@@ -792,9 +881,13 @@ export default function LoanDocumentList() {
                                 {loan.id}
                               </div>
                               <div className="text-sm text-gray-500">
-                                <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${loanTypeConfig.color}`}>
+                                <span
+                                  className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${loanTypeConfig.color}`}
+                                >
                                   {loanTypeConfig.icon}
-                                  <span className="ml-1">{loanTypeConfig.text}</span>
+                                  <span className="ml-1">
+                                    {loanTypeConfig.text}
+                                  </span>
                                 </span>
                               </div>
                             </div>
@@ -818,9 +911,13 @@ export default function LoanDocumentList() {
                               <DollarSign className="w-4 h-4 text-green-600" />
                               <span>{formatCurrency(loan.loanAmount)}</span>
                             </div>
-                            <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${verificationConfig.color}`}>
+                            <span
+                              className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${verificationConfig.color}`}
+                            >
                               {verificationConfig.icon}
-                              <span className="ml-1">{verificationConfig.text}</span>
+                              <span className="ml-1">
+                                {verificationConfig.text}
+                              </span>
                             </span>
                           </div>
                         </td>
@@ -831,36 +928,42 @@ export default function LoanDocumentList() {
                           <div className="space-y-1 text-sm text-gray-600">
                             <div className="flex items-center space-x-1">
                               <Calendar className="w-3 h-3" />
-                              <span>Applied: {formatDate(loan.appliedDate)}</span>
+                              <span>
+                                Applied: {formatDate(loan.appliedDate)}
+                              </span>
                             </div>
                             <div className="flex items-center space-x-1">
                               <Calendar className="w-3 h-3" />
-                              <span>Verified: {formatDate(loan.verificationDate)}</span>
+                              <span>
+                                Verified: {formatDate(loan.verificationDate)}
+                              </span>
                             </div>
                           </div>
                         </td>
                         <td className="px-6 py-4">
-                          <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${statusConfig.color}`}>
+                          <span
+                            className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${statusConfig.color}`}
+                          >
                             {statusConfig.icon}
                             <span className="ml-1">{statusConfig.text}</span>
                           </span>
                         </td>
                         <td className="px-6 py-4">
                           <div className="flex items-center space-x-1">
-                            <button 
+                            <button
                               onClick={() => handleDownload(loan.id)}
                               className="p-2 hover:bg-blue-50 rounded-lg transition-all duration-200 text-blue-600 hover:scale-110"
                               title="Download Documents"
                             >
                               <Download className="w-4 h-4" />
                             </button>
-                            <button 
+                            <button
                               className="p-2 hover:bg-green-50 rounded-lg transition-all duration-200 text-green-600 hover:scale-110"
                               title="View Details"
                             >
                               <Eye className="w-4 h-4" />
                             </button>
-                            <button 
+                            <button
                               className="p-2 hover:bg-purple-50 rounded-lg transition-all duration-200 text-purple-600 hover:scale-110"
                               title="Edit Application"
                             >
@@ -921,7 +1024,8 @@ export default function LoanDocumentList() {
           <div className="px-6 py-4 border-t border-gray-200 bg-gray-50">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
               <div className="text-sm text-gray-600">
-                Showing {filteredLoans.length} of {loans.length} loan applications
+                Showing {filteredLoans.length} of {loans.length} loan
+                applications
                 {selectedLoans.length > 0 && (
                   <span className="ml-2 font-medium text-blue-600">
                     ({selectedLoans.length} selected)

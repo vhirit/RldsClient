@@ -1,6 +1,5 @@
-
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Eye,
   EyeOff,
@@ -13,28 +12,29 @@ import {
   Shield,
   Users,
   FileText,
-  BarChart3
-} from 'lucide-react';
+  BarChart3,
+} from "lucide-react";
 
 const Register = () => {
   const navigate = useNavigate();
-  const API_BASE_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8080';
+  const API_BASE_URL =
+    process.env.REACT_APP_BACKEND_URL || "http://localhost:8080";
 
   const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-    phone: '',
-    password: '',
-    confirmPassword: '',
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: "",
+    password: "",
+    confirmPassword: "",
     agreeToTerms: false,
   });
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
   const [fieldErrors, setFieldErrors] = useState({
     firstName: false,
     lastName: false,
@@ -42,7 +42,7 @@ const Register = () => {
     phone: false,
     password: false,
     confirmPassword: false,
-    agreeToTerms: false
+    agreeToTerms: false,
   });
   const [touched, setTouched] = useState({
     firstName: false,
@@ -50,14 +50,14 @@ const Register = () => {
     email: false,
     phone: false,
     password: false,
-    confirmPassword: false
+    confirmPassword: false,
   });
 
   // Prevent page scrolling
   useEffect(() => {
-    document.body.style.overflow = 'hidden';
+    document.body.style.overflow = "hidden";
     return () => {
-      document.body.style.overflow = 'unset';
+      document.body.style.overflow = "unset";
     };
   }, []);
 
@@ -65,41 +65,41 @@ const Register = () => {
     const { name, value, type, checked } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: type === 'checkbox' ? checked : value,
+      [name]: type === "checkbox" ? checked : value,
     }));
-    
+
     // Clear field error when user starts typing
     if (fieldErrors[name]) {
-      setFieldErrors(prev => ({
+      setFieldErrors((prev) => ({
         ...prev,
-        [name]: false
+        [name]: false,
       }));
     }
-    setError('');
-    setSuccess('');
+    setError("");
+    setSuccess("");
   };
 
   const handleBlur = (e) => {
     const { name, value } = e.target;
-    setTouched(prev => ({
+    setTouched((prev) => ({
       ...prev,
-      [name]: true
+      [name]: true,
     }));
 
     // Validate individual field on blur
     if (!value.trim()) {
-      setFieldErrors(prev => ({
+      setFieldErrors((prev) => ({
         ...prev,
-        [name]: true
+        [name]: true,
       }));
     }
 
     // Special validation for confirmPassword
-    if (name === 'confirmPassword' || name === 'password') {
+    if (name === "confirmPassword" || name === "password") {
       if (formData.password !== formData.confirmPassword) {
-        setFieldErrors(prev => ({
+        setFieldErrors((prev) => ({
           ...prev,
-          confirmPassword: true
+          confirmPassword: true,
         }));
       }
     }
@@ -112,10 +112,12 @@ const Register = () => {
       email: !formData.email.trim(),
       phone: !formData.phone.trim(),
       password: !formData.password.trim(),
-      confirmPassword: !formData.confirmPassword.trim() || formData.password !== formData.confirmPassword,
-      agreeToTerms: !formData.agreeToTerms
+      confirmPassword:
+        !formData.confirmPassword.trim() ||
+        formData.password !== formData.confirmPassword,
+      agreeToTerms: !formData.agreeToTerms,
     };
-    
+
     setFieldErrors(errors);
     setTouched({
       firstName: true,
@@ -123,63 +125,70 @@ const Register = () => {
       email: true,
       phone: true,
       password: true,
-      confirmPassword: true
+      confirmPassword: true,
     });
 
-    return !Object.values(errors).some(error => error);
+    return !Object.values(errors).some((error) => error);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!validateForm()) {
-      setError('Please fill in all required fields correctly');
+      setError("Please fill in all required fields correctly");
       return;
     }
 
     setLoading(true);
-    setError('');
-    setSuccess('');
+    setError("");
+    setSuccess("");
 
     try {
-      const response = await fetch(`${API_BASE_URL}/api/user/customer/register`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          firstName: formData.firstName,
-          lastName: formData.lastName,
-          email: formData.email,
-          phone: formData.phone,
-          password: formData.password
-        })
-      });
+      const response = await fetch(
+        `${API_BASE_URL}/api/user/customer/register`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            firstName: formData.firstName,
+            lastName: formData.lastName,
+            email: formData.email,
+            phone: formData.phone,
+            password: formData.password,
+          }),
+        }
+      );
 
       const data = await response.json();
 
       if (response.ok && data.success) {
-        setSuccess('Registration successful! Please check your email for verification instructions.');
+        setSuccess(
+          "Registration successful! Please check your email for verification instructions."
+        );
         // Reset form
         setFormData({
-          firstName: '',
-          lastName: '',
-          email: '',
-          phone: '',
-          password: '',
-          confirmPassword: '',
-          agreeToTerms: false
+          firstName: "",
+          lastName: "",
+          email: "",
+          phone: "",
+          password: "",
+          confirmPassword: "",
+          agreeToTerms: false,
         });
         // Redirect to login after 2 seconds
         setTimeout(() => {
-          navigate('/login');
+          navigate("/login");
         }, 2000);
       } else {
-        setError(data.error || data.message || 'Registration failed. Please try again.');
+        setError(
+          data.error || data.message || "Registration failed. Please try again."
+        );
       }
     } catch (error) {
-      console.error('Registration error:', error);
-      setError('Network error. Please check your connection and try again.');
+      console.error("Registration error:", error);
+      setError("Network error. Please check your connection and try again.");
     } finally {
       setLoading(false);
     }
@@ -187,47 +196,54 @@ const Register = () => {
 
   const handleLoginClick = (e) => {
     e.preventDefault();
-    navigate('/login');
+    navigate("/login");
   };
 
   // Helper function to determine input border color
   const getInputBorderColor = (fieldName) => {
     if (touched[fieldName] && fieldErrors[fieldName]) {
-      return 'border-red-500 focus:border-red-500 focus:ring-red-500';
+      return "border-red-500 focus:border-red-500 focus:ring-red-500";
     }
-    return 'border-gray-300 focus:ring-blue-500 focus:border-blue-500';
+    return "border-gray-300 focus:ring-blue-500 focus:border-blue-500";
   };
 
   // Mock data for dashboard preview
   const stats = [
-    { label: 'Total Users', value: '2,847', color: 'text-blue-600' },
-    { label: 'Active Verifications', value: '156', color: 'text-yellow-600' },
-    { label: 'Completed Today', value: '124', color: 'text-green-600' },
-    { label: 'Success Rate', value: '99.2%', color: 'text-purple-600' }
+    { label: "Total Users", value: "2,847", color: "text-blue-600" },
+    { label: "Active Verifications", value: "156", color: "text-yellow-600" },
+    { label: "Completed Today", value: "124", color: "text-green-600" },
+    { label: "Success Rate", value: "99.2%", color: "text-purple-600" },
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4 overflow-hidden">
-      <div className="w-full max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8 items-center relative">
-        
+    // <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4 overflow-hidden ">
+    <div className="h-screen bg-gray-50 flex items-center justify-center p-4 py-8 overflow-auto">
+
+      <div className="w-full max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8 items-center relative ">
         {/* Vertical Divider Line - Only visible on large screens */}
+
         <div className="hidden lg:block absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2">
-          <div className="relative">
-            {/* Main divider line */}
-            <div className="w-px h-96 bg-gradient-to-b from-transparent via-gray-300/40 to-transparent"></div>
-            {/* Subtle glow effect */}
-            <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-16 h-96 bg-gradient-to-b from-transparent via-blue-200/20 to-transparent blur-sm"></div>
-            {/* Center decorative dot */}
-            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-2 h-2 bg-gradient-to-br from-blue-400 to-purple-500 rounded-full shadow-sm"></div>
+          <div className="relative flex flex-col items-center">
+            {/* Top ornament */}
+            <div className="w-4 h-4 bg-gradient-to-br from-blue-400 to-purple-500 rounded-full mb-2 shadow-md"></div>
+
+            {/* Main line */}
+            <div className="w-px h-80 bg-gradient-to-b from-blue-400/50 via-purple-500/50 to-blue-400/50"></div>
+
+            {/* Bottom ornament */}
+            <div className="w-4 h-4 bg-gradient-to-br from-purple-500 to-blue-400 rounded-full mt-2 shadow-md"></div>
+
+            {/* Glow effect */}
+            <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-8 h-80 bg-gradient-to-b from-blue-200/20 to-purple-200/20 blur-sm -z-10"></div>
           </div>
         </div>
-        
+
         {/* Left Side - Registration Form */}
         <div className="w-full max-w-md mx-auto lg:mx-0">
           {/* Logo and Header */}
           <div className="text-center mb-8">
             <div className="flex justify-center mb-6">
-              <div className="w-16 h-16 bg-gradient-to-br from-blue-600 to-purple-600 rounded-2xl flex items-center justify-center">
+             <div className="w-16 h-16 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl flex items-center justify-center">
                 <Shield className="w-8 h-8 text-white" />
               </div>
             </div>
@@ -246,9 +262,7 @@ const Register = () => {
               <div className="bg-red-50 border border-red-200 rounded-xl p-4 flex items-start space-x-3">
                 <AlertCircle className="w-5 h-5 text-red-500 mt-0.5 flex-shrink-0" />
                 <div>
-                  <p className="text-red-800 font-medium text-sm">
-                    {error}
-                  </p>
+                  <p className="text-red-800 font-medium text-sm">{error}</p>
                 </div>
               </div>
             )}
@@ -275,7 +289,11 @@ const Register = () => {
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <User className={`h-5 w-5 ${fieldErrors.firstName ? 'text-red-500' : 'text-gray-400'}`} />
+                    <User
+                      className={`h-5 w-5 ${
+                        fieldErrors.firstName ? "text-red-500" : "text-gray-400"
+                      }`}
+                    />
                   </div>
                   <input
                     type="text"
@@ -285,7 +303,9 @@ const Register = () => {
                     onBlur={handleBlur}
                     disabled={loading}
                     placeholder="First name"
-                    className={`block w-full pl-10 pr-4 py-3 border rounded-xl focus:ring-2 bg-white transition-all duration-200 placeholder-gray-400 disabled:bg-gray-50 disabled:cursor-not-allowed ${getInputBorderColor('firstName')}`}
+                    className={`block w-full pl-10 pr-4 py-3 border rounded-xl focus:ring-2 bg-white transition-all duration-200 placeholder-gray-400 disabled:bg-gray-50 disabled:cursor-not-allowed ${getInputBorderColor(
+                      "firstName"
+                    )}`}
                     required
                   />
                   {fieldErrors.firstName && touched.firstName && (
@@ -295,7 +315,9 @@ const Register = () => {
                   )}
                 </div>
                 {fieldErrors.firstName && touched.firstName && (
-                  <p className="mt-1 text-sm text-red-600">First name is required</p>
+                  <p className="mt-1 text-sm text-red-600">
+                    First name is required
+                  </p>
                 )}
               </div>
 
@@ -307,7 +329,11 @@ const Register = () => {
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <User className={`h-5 w-5 ${fieldErrors.lastName ? 'text-red-500' : 'text-gray-400'}`} />
+                    <User
+                      className={`h-5 w-5 ${
+                        fieldErrors.lastName ? "text-red-500" : "text-gray-400"
+                      }`}
+                    />
                   </div>
                   <input
                     type="text"
@@ -317,7 +343,9 @@ const Register = () => {
                     onBlur={handleBlur}
                     disabled={loading}
                     placeholder="Last name"
-                    className={`block w-full pl-10 pr-4 py-3 border rounded-xl focus:ring-2 bg-white transition-all duration-200 placeholder-gray-400 disabled:bg-gray-50 disabled:cursor-not-allowed ${getInputBorderColor('lastName')}`}
+                    className={`block w-full pl-10 pr-4 py-3 border rounded-xl focus:ring-2 bg-white transition-all duration-200 placeholder-gray-400 disabled:bg-gray-50 disabled:cursor-not-allowed ${getInputBorderColor(
+                      "lastName"
+                    )}`}
                     required
                   />
                   {fieldErrors.lastName && touched.lastName && (
@@ -327,7 +355,9 @@ const Register = () => {
                   )}
                 </div>
                 {fieldErrors.lastName && touched.lastName && (
-                  <p className="mt-1 text-sm text-red-600">Last name is required</p>
+                  <p className="mt-1 text-sm text-red-600">
+                    Last name is required
+                  </p>
                 )}
               </div>
             </div>
@@ -340,7 +370,11 @@ const Register = () => {
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Mail className={`h-5 w-5 ${fieldErrors.email ? 'text-red-500' : 'text-gray-400'}`} />
+                  <Mail
+                    className={`h-5 w-5 ${
+                      fieldErrors.email ? "text-red-500" : "text-gray-400"
+                    }`}
+                  />
                 </div>
                 <input
                   type="email"
@@ -350,7 +384,9 @@ const Register = () => {
                   onBlur={handleBlur}
                   disabled={loading}
                   placeholder="Enter your email address"
-                  className={`block w-full pl-10 pr-4 py-3 border rounded-xl focus:ring-2 bg-white transition-all duration-200 placeholder-gray-400 disabled:bg-gray-50 disabled:cursor-not-allowed ${getInputBorderColor('email')}`}
+                  className={`block w-full pl-10 pr-4 py-3 border rounded-xl focus:ring-2 bg-white transition-all duration-200 placeholder-gray-400 disabled:bg-gray-50 disabled:cursor-not-allowed ${getInputBorderColor(
+                    "email"
+                  )}`}
                   required
                 />
                 {fieldErrors.email && touched.email && (
@@ -372,7 +408,11 @@ const Register = () => {
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Phone className={`h-5 w-5 ${fieldErrors.phone ? 'text-red-500' : 'text-gray-400'}`} />
+                  <Phone
+                    className={`h-5 w-5 ${
+                      fieldErrors.phone ? "text-red-500" : "text-gray-400"
+                    }`}
+                  />
                 </div>
                 <input
                   type="tel"
@@ -382,7 +422,9 @@ const Register = () => {
                   onBlur={handleBlur}
                   disabled={loading}
                   placeholder="Enter your phone number"
-                  className={`block w-full pl-10 pr-4 py-3 border rounded-xl focus:ring-2 bg-white transition-all duration-200 placeholder-gray-400 disabled:bg-gray-50 disabled:cursor-not-allowed ${getInputBorderColor('phone')}`}
+                  className={`block w-full pl-10 pr-4 py-3 border rounded-xl focus:ring-2 bg-white transition-all duration-200 placeholder-gray-400 disabled:bg-gray-50 disabled:cursor-not-allowed ${getInputBorderColor(
+                    "phone"
+                  )}`}
                   required
                 />
                 {fieldErrors.phone && touched.phone && (
@@ -392,7 +434,9 @@ const Register = () => {
                 )}
               </div>
               {fieldErrors.phone && touched.phone && (
-                <p className="mt-1 text-sm text-red-600">Phone number is required</p>
+                <p className="mt-1 text-sm text-red-600">
+                  Phone number is required
+                </p>
               )}
             </div>
 
@@ -404,17 +448,23 @@ const Register = () => {
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Lock className={`h-5 w-5 ${fieldErrors.password ? 'text-red-500' : 'text-gray-400'}`} />
+                  <Lock
+                    className={`h-5 w-5 ${
+                      fieldErrors.password ? "text-red-500" : "text-gray-400"
+                    }`}
+                  />
                 </div>
                 <input
-                  type={showPassword ? 'text' : 'password'}
+                  type={showPassword ? "text" : "password"}
                   name="password"
                   value={formData.password}
                   onChange={handleChange}
                   onBlur={handleBlur}
                   disabled={loading}
                   placeholder="Enter your password"
-                  className={`block w-full pl-10 pr-12 py-3 border rounded-xl focus:ring-2 bg-white transition-all duration-200 placeholder-gray-400 disabled:bg-gray-50 disabled:cursor-not-allowed ${getInputBorderColor('password')}`}
+                  className={`block w-full pl-10 pr-12 py-3 border rounded-xl focus:ring-2 bg-white transition-all duration-200 placeholder-gray-400 disabled:bg-gray-50 disabled:cursor-not-allowed ${getInputBorderColor(
+                    "password"
+                  )}`}
                   required
                 />
                 <div className="absolute inset-y-0 right-0 flex items-center">
@@ -438,7 +488,9 @@ const Register = () => {
                 </div>
               </div>
               {fieldErrors.password && touched.password && (
-                <p className="mt-1 text-sm text-red-600">Password is required</p>
+                <p className="mt-1 text-sm text-red-600">
+                  Password is required
+                </p>
               )}
             </div>
 
@@ -450,17 +502,25 @@ const Register = () => {
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Lock className={`h-5 w-5 ${fieldErrors.confirmPassword ? 'text-red-500' : 'text-gray-400'}`} />
+                  <Lock
+                    className={`h-5 w-5 ${
+                      fieldErrors.confirmPassword
+                        ? "text-red-500"
+                        : "text-gray-400"
+                    }`}
+                  />
                 </div>
                 <input
-                  type={showConfirmPassword ? 'text' : 'password'}
+                  type={showConfirmPassword ? "text" : "password"}
                   name="confirmPassword"
                   value={formData.confirmPassword}
                   onChange={handleChange}
                   onBlur={handleBlur}
                   disabled={loading}
                   placeholder="Confirm your password"
-                  className={`block w-full pl-10 pr-12 py-3 border rounded-xl focus:ring-2 bg-white transition-all duration-200 placeholder-gray-400 disabled:bg-gray-50 disabled:cursor-not-allowed ${getInputBorderColor('confirmPassword')}`}
+                  className={`block w-full pl-10 pr-12 py-3 border rounded-xl focus:ring-2 bg-white transition-all duration-200 placeholder-gray-400 disabled:bg-gray-50 disabled:cursor-not-allowed ${getInputBorderColor(
+                    "confirmPassword"
+                  )}`}
                   required
                 />
                 <div className="absolute inset-y-0 right-0 flex items-center">
@@ -485,7 +545,9 @@ const Register = () => {
               </div>
               {fieldErrors.confirmPassword && touched.confirmPassword && (
                 <p className="mt-1 text-sm text-red-600">
-                  {formData.confirmPassword ? 'Passwords do not match' : 'Please confirm your password'}
+                  {formData.confirmPassword
+                    ? "Passwords do not match"
+                    : "Please confirm your password"}
                 </p>
               )}
             </div>
@@ -501,26 +563,42 @@ const Register = () => {
                 className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2 mt-1 flex-shrink-0"
               />
               <label className="text-sm text-gray-600">
-                I agree to the{' '}
-                <a href="/terms" className="text-blue-600 hover:text-blue-700 font-medium">
+                I agree to the{" "}
+                <a
+                  href="/terms"
+                  className="text-blue-600 hover:text-blue-700 font-medium"
+                >
                   Terms and Conditions
-                </a>{' '}
-                and{' '}
-                <a href="/privacy" className="text-blue-600 hover:text-blue-700 font-medium">
+                </a>{" "}
+                and{" "}
+                <a
+                  href="/privacy"
+                  className="text-blue-600 hover:text-blue-700 font-medium"
+                >
                   Privacy Policy
                 </a>
                 <span className="text-red-500 ml-1">*</span>
               </label>
             </div>
             {fieldErrors.agreeToTerms && (
-              <p className="text-sm text-red-600">You must agree to the terms and conditions</p>
+              <p className="text-sm text-red-600">
+                You must agree to the terms and conditions
+              </p>
             )}
 
             {/* Register Button */}
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 px-4 rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none mt-4"
+              className="
+    w-full
+    bg-gradient-to-r from-blue-600 to-indigo-600
+    hover:from-blue-700 hover:to-indigo-700
+    text-white px-6 py-3 rounded-xl font-semibold
+    flex items-center justify-center gap-2
+    shadow-sm hover:shadow-md
+    transform hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none
+  "
             >
               {loading ? (
                 <div className="flex items-center justify-center space-x-2">
@@ -528,14 +606,14 @@ const Register = () => {
                   <span>Creating Account...</span>
                 </div>
               ) : (
-                'Create Account'
+                "Create Account"
               )}
             </button>
 
             {/* Login Link */}
             <div className="text-center pt-4">
               <p className="text-gray-600 text-sm">
-                Already have an account?{' '}
+                Already have an account?{" "}
                 <button
                   type="button"
                   onClick={handleLoginClick}
@@ -555,16 +633,15 @@ const Register = () => {
             </div>
           </form>
         </div>
-            
+
         {/* Right Side - Dashboard Preview */}
         <div className="hidden lg:block relative bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-100 rounded-3xl p-6 min-h-[600px]">
           {/* Background Decorations */}
           <div className="absolute -top-20 -right-20 w-80 h-80 bg-gradient-to-br from-blue-400/20 to-purple-400/20 rounded-full blur-3xl"></div>
           <div className="absolute -bottom-20 -left-20 w-80 h-80 bg-gradient-to-br from-purple-400/20 to-pink-400/20 rounded-full blur-3xl"></div>
-          
+
           {/* Dashboard Preview Container */}
           <div className="relative bg-white/80 backdrop-blur-sm rounded-3xl border border-white/20 p-8">
-            
             {/* Dashboard Header */}
             <div className="flex items-center justify-between mb-8">
               <div className="flex items-center space-x-3">
@@ -572,7 +649,9 @@ const Register = () => {
                   <Shield className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <h3 className="font-bold text-gray-900 text-lg">Verification Hub</h3>
+                  <h3 className="font-bold text-gray-900 text-lg">
+                    Verification Hub
+                  </h3>
                   <p className="text-gray-500 text-sm">RLDS Dashboard v2.1</p>
                 </div>
               </div>
@@ -590,8 +669,12 @@ const Register = () => {
                   NJ
                 </div>
                 <div className="flex-1">
-                  <h4 className="font-semibold text-gray-900">Welcome to RLDS</h4>
-                  <p className="text-gray-600 text-sm">Start your verification journey</p>
+                  <h4 className="font-semibold text-gray-900">
+                    Welcome to RLDS
+                  </h4>
+                  <p className="text-gray-600 text-sm">
+                    Start your verification journey
+                  </p>
                 </div>
                 <div className="w-3 h-3 bg-blue-500 rounded-full animate-pulse"></div>
               </div>
@@ -600,16 +683,24 @@ const Register = () => {
             {/* Stats Grid */}
             <div className="grid grid-cols-2 gap-4 mb-6">
               {stats.map((stat, index) => (
-                <div 
+                <div
                   key={index}
                   className="bg-white rounded-xl p-4 border border-gray-200 transition-all duration-200"
                 >
                   <div className="flex items-center space-x-3">
                     <div className={`p-2 rounded-lg bg-blue-50`}>
-                      {index === 0 && <Users className="w-4 h-4 text-blue-600" />}
-                      {index === 1 && <FileText className="w-4 h-4 text-yellow-600" />}
-                      {index === 2 && <CheckCircle2 className="w-4 h-4 text-green-600" />}
-                      {index === 3 && <BarChart3 className="w-4 h-4 text-purple-600" />}
+                      {index === 0 && (
+                        <Users className="w-4 h-4 text-blue-600" />
+                      )}
+                      {index === 1 && (
+                        <FileText className="w-4 h-4 text-yellow-600" />
+                      )}
+                      {index === 2 && (
+                        <CheckCircle2 className="w-4 h-4 text-green-600" />
+                      )}
+                      {index === 3 && (
+                        <BarChart3 className="w-4 h-4 text-purple-600" />
+                      )}
                     </div>
                     <div>
                       <p className={`text-lg font-bold ${stat.color}`}>
@@ -626,13 +717,15 @@ const Register = () => {
 
             {/* Features List */}
             <div className="bg-gray-50 rounded-2xl p-4 border border-gray-200 mb-6">
-              <h4 className="font-semibold text-gray-900 mb-3 text-sm">What You Get</h4>
+              <h4 className="font-semibold text-gray-900 mb-3 text-sm">
+                What You Get
+              </h4>
               <div className="space-y-2 text-sm text-gray-600">
                 {[
-                  'Secure document verification',
-                  'Real-time status updates',
-                  'Advanced fraud detection',
-                  '24/7 customer support'
+                  "Secure document verification",
+                  "Real-time status updates",
+                  "Advanced fraud detection",
+                  "24/7 customer support",
                 ].map((feature, index) => (
                   <div key={index} className="flex items-center space-x-2">
                     <div className="w-1.5 h-1.5 bg-green-500 rounded-full"></div>
@@ -645,15 +738,17 @@ const Register = () => {
             {/* Getting Started */}
             <div className="mt-6">
               <div className="flex items-center justify-between mb-3">
-                <h4 className="font-semibold text-gray-900 text-sm">Getting Started</h4>
+                <h4 className="font-semibold text-gray-900 text-sm">
+                  Getting Started
+                </h4>
                 <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
               </div>
               <div className="space-y-2 text-xs text-gray-600">
                 {[
-                  'Complete your profile verification',
-                  'Upload your first document',
-                  'Set up security preferences',
-                  'Explore advanced features'
+                  "Complete your profile verification",
+                  "Upload your first document",
+                  "Set up security preferences",
+                  "Explore advanced features",
                 ].map((step, index) => (
                   <div key={index} className="flex items-center space-x-2">
                     <div className="w-1.5 h-1.5 bg-blue-500 rounded-full"></div>
